@@ -157,6 +157,21 @@ public class CharacterUI : BaseGameUI
 
     void OnWaitChanged()
     {
+        // 1. Проверяем, привязан ли персонаж к этому интерфейсу
+        if (designatedCharacter == null)
+        {
+            Debug.LogError($"[CharacterUI] На объекте {gameObject.name} переменная designatedCharacter равна null!");
+            return;
+        }
+
+        // 2. Проверяем, назначена ли картинка-слайдер в инспекторе
+        if (waitImage == null)
+        {
+            Debug.LogError($"[CharacterUI] На объекте {gameObject.name} не назначена ссылка на waitImage в инспекторе!");
+            return;
+        }
+
+        // Если всё на месте — обновляем полосу
         waitImage.fillAmount = designatedCharacter.WaitTimer;
     }
 

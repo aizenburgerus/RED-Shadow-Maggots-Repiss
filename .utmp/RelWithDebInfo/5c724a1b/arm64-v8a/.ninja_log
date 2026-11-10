@@ -1,0 +1,5 @@
+# ninja log v5
+24	444	8058198675313445	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	859ea1cd11e802ee
+444	724	8058198677741996	E:/Projects/Red-Shadow-Maggots-master/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/5c724a1b/obj/arm64-v8a/libswappywrapper.so	2341c8a5e0c474c4
+49	1789	8058237102118149	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	859ea1cd11e802ee
+1789	2139	8058237105378336	E:/Projects/Red-Shadow-Maggots-master/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/5c724a1b/obj/arm64-v8a/libswappywrapper.so	2341c8a5e0c474c4

@@ -9,24 +9,62 @@ public class StatChangeEffect : BaseGameEffect
 
     public override bool Activate(AppliedEffect effect)
     {
+        // ЗАЩИТА: Проверяем критически важные ссылки
+        if (effect == null) return false;
+
+        if (stat == null)
+        {
+            Debug.LogError($"[StatChangeEffect] Ошибка: Поле 'stat' не инициализировано или стерлось при загрузке на {effect.Target?.name}!");
+            return false;
+        }
+
+        if (effect.cachedValues == null)
+        {
+            effect.cachedValues = new List<CachedValue>();
+        }
+
         if (effect.cachedValues.Count == 0)
         {
+            // ЗАЩИТА: Проверяем, есть ли откуда считывать значение
+            if (effect.value == null)
+            {
+                Debug.LogError($"[StatChangeEffect] Ошибка: 'effect.value' равен null при попытке активировать эффект на {effect.Target?.name}!");
+                return false;
+            }
+
             var value = effect.value.GetValue(effect.targetProps);
-            stat.SetGameStat(effect.Target, value);
+
+            if (effect.Target != null)
+            {
+                stat.SetGameStat(effect.Target, value);
+            }
+
             effect.cachedValues.Add(new CachedValue { Value = value, Type = effect.value.ValueType });
         }
         else
         {
             var amount = effect.cachedValues[0];
-            stat.SetGameStat(effect.Target, amount.Value);
+            if (effect.Target != null && amount != null)
+            {
+                stat.SetGameStat(effect.Target, amount.Value);
+            }
         }
 
         return base.Activate(effect);
     }
 
+
     public override void OnExpire(AppliedEffect effect)
     {
-        stat.SetGameStat(effect.Target, -effect.cachedValues[0].Value);
+        // Проверяем, есть ли сохраненное значение, чтобы избежать краша
+        if (effect.cachedValues != null && effect.cachedValues.Count > 0)
+        {
+            stat.SetGameStat(effect.Target, -effect.cachedValues[0].Value);
+        }
+        else
+        {
+            Debug.LogWarning($"[StatChangeEffect] Попытка удалить эффект {name}, но cachedValues пуст!");
+        }
 
         base.OnExpire(effect);
     }
@@ -35,17 +73,32 @@ public class StatChangeEffect : BaseGameEffect
     {
         var d = base.GetEffectDescription(effect);
 
+        // 1. Безопасно заменяем имя стата
         if (stat != null)
         {
             d = d.Replace("$STAT", stat.Name);
         }
 
-        if (effect.value != null)
+        // 2. Безопасно заменяем значение $VALUE, проверяя стат и кэш
+        if (effect.value != null && stat != null)
         {
-            d = d.Replace("$VALUE", effect.cachedValues[0].Value.FormatTo(stat.ValueType));
+            if (effect.cachedValues != null && effect.cachedValues.Count > 0)
+            {
+                d = d.Replace("$VALUE", effect.cachedValues[0].Value.FormatTo(stat.ValueType));
+            }
+            else if (effect.targetProps != null)
+            {
+                // Фоллбек: если кэша нет, пробуем рассчитать базовое значение «на лету»
+                var fallbackValue = effect.value.GetValue(effect.targetProps);
+                d = d.Replace("$VALUE", fallbackValue.FormatTo(stat.ValueType));
+            }
         }
 
-        d = effect.value.ProcessSkillDescription(effect.effectTarget, d);
+        // 3. Безопасно обрабатываем описание умения
+        if (effect.value != null)
+        {
+            d = effect.value.ProcessSkillDescription(effect.effectTarget, d);
+        }
 
         return d;
     }

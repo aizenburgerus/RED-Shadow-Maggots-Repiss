@@ -26,11 +26,21 @@ public class GameSkill
 
     public GameSkill(BaseCharacter character, BaseAbilityObject skill, CoolDownDelegate d = null)
     {
+        // ЗАЩИТА: Если передали null вместо умения, выводим ошибку и выходим
+        if (skill == null)
+        {
+            Debug.LogError($"[GameSkill] Попытка создать умение для {character?.gameObject.name}, но переданный BaseAbilityObject равен null!");
+            return;
+        }
+
         if (d == null)
         {
             EffectiveCooldown = () => CooldownTimer;
         }
-        else EffectiveCooldown = d;
+        else
+        {
+            EffectiveCooldown = d;
+        }
 
         ReferenceSkill = skill;
 
@@ -42,11 +52,17 @@ public class GameSkill
 
     public void BeginCooldown()
     {
-        CooldownTimer = ReferenceSkill.coolDown;
+        if (ReferenceSkill != null)
+        {
+            CooldownTimer = ReferenceSkill.coolDown;
+        }
     }
 
     public void Cooldown()
     {
-        CooldownTimer = Mathf.Clamp(CooldownTimer - 1, 0, ReferenceSkill.coolDown);
+        if (ReferenceSkill != null)
+        {
+            CooldownTimer = Mathf.Clamp(CooldownTimer - 1, 0, ReferenceSkill.coolDown);
+        }
     }
 }

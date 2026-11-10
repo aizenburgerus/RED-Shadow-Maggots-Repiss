@@ -1,5 +1,3 @@
-## IMPORTANT INFORMATION: Due to the original developer having finished development of the game, this branch was created primarily for experimentation with the original game data and may never be completed.
-
 # RED: Shadow Maggots Project Repo
 
 # To those who wish to tinker with these files

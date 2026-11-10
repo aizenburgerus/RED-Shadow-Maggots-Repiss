@@ -102,22 +102,32 @@ public class SceneTweener : BasicSingleton<SceneTweener>
     // Update is called once per frame
     void Update()
     {
-        if (!playerDolly)
+        // Логика для игрока
+        if (!playerDolly && playerCam != null)
         {
             playerDolly = playerCam.GetCinemachineComponent<CinemachineTrackedDolly>();
         }
-        else
+
+        if (playerDolly)
         {
             playerDolly.m_PathPosition = lerpValue;
         }
 
-        if (!enemyDolly)
+        // Исправленная логика для врага
+        if (!enemyDolly && enemyCam != null)
         {
             enemyDolly = enemyCam.GetCinemachineComponent<CinemachineTrackedDolly>();
+
+            // Если попытались найти, но на этом кадре всё еще null
+            if (!enemyDolly)
+            {
+                Debug.LogWarning("Cannot find enemyDolly! Somehow that invisible cm object doesn't instantiate!");
+            }
         }
-        else
+
+        // Если enemyDolly успешно существует (нашелся ранее или только что)
+        if (enemyDolly)
         {
-            Debug.LogWarning("Cannot find enemyDolly! Somehow that invisible cm object doesn't instantiate!");
             enemyDolly.m_PathPosition = lerpValue;
         }
     }

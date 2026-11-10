@@ -574,45 +574,43 @@ public class BattleSystem : BasicSingleton<BattleSystem>
         bool finished = false;
         float skillUseTime = 1.5f;
 
-        // Listen for if Player activates skills
+        // Listen for if Player activates skills 
         playerTargets.player.RegisterOnSkillFoundTargets(() => finished = true);
 
-        // Activate Skill
+        // Activate Skill 
         playerTargets.player.UseSkill(skill);
-
         Debug.Log("Waiting for Finish...");
 
-        // Wait for player to activate skills
+        // Wait for player to activate skills 
         while (!finished) yield return null;
-
         Debug.Log("Finished!");
 
         finished = false;
-
         playerTargets.player.AnimHelper.RegisterOnFinishSkillAnimation(() => finished = true);
 
         ui.HideBattleUI();
-
         SceneTweener.Instance.SkillTween(playerTargets.player.transform, skillUseTime);
 
-        //yield return new WaitForSeconds(skillUseTime);
+        //yield return new WaitForSeconds(skillUseTime); 
         while (!finished) yield return null;
 
         SceneTweener.Instance.SkillUntween();
-
         finished = false;
 
         playerTargets.player.RegisterOnFinishApplyingSkillEffects(() => finished = true);
-
         playerTargets.player.ResolveSkill(skill);
 
-        // Wait for skill effects to finish animating
+        // Wait for skill effects to finish animating 
         while (!finished) yield return null;
 
         gameManager.SaveBattleState();
-
         ui.ShowBattleUI();
+
+        // ЖЕСТКАЯ СТРАХОВКА: Подталкиваем боевую систему идти дальше,
+        // чтобы игра не зависала после включения интерфейса!
+        ChangeBattlePhase();
     }
+
 
     public void TrySetActivePlayer(PlayerCharacter player)
     {
@@ -675,19 +673,33 @@ public class BattleSystem : BasicSingleton<BattleSystem>
 
     IEnumerator EndTurnRoutine()
     {
+        // Защита от поломки корутины: перебираем эффекты смерти безопасно
         foreach (var effect in deathEffects)
         {
-            effect.OnDeath();
+            if (effect == null) continue;
+
+            try
+            {
+                effect.OnDeath();
+            }
+            catch (System.Exception e)
+            {
+                // Выводим ошибку в консоль, но НЕ даем ей остановить бой
+                Debug.LogError($"[BattleSystem] Ошибка при обработке эффекта смерти: {e.Message}\n{e.StackTrace}");
+            }
 
             yield return new WaitForSeconds(sceneTweener.EffectTickTime);
-
-            // DIE
         }
+
+        // Код ниже ТЕПЕРЬ СРАБОТАЕТ ВСЕГДА, даже если в эффектах была ошибка
         deathEffects.Clear();
 
         var lastPhase = currentPhase;
 
-        if (!PlayersAlive) currentPhase = BattlePhases.BattleLose;
+        if (!PlayersAlive)
+        {
+            currentPhase = BattlePhases.BattleLose;
+        }
         else if (!enemyController.EnemiesAlive)
         {
             currentPhase = BattlePhases.BattleWin;
@@ -695,9 +707,19 @@ public class BattleSystem : BasicSingleton<BattleSystem>
         else if (PlayersAlive)
         {
             OnEndTurn?.Invoke();
-            waitList[0].OnEndTurn?.Invoke();
-            OnEndPhase[currentPhase.ToInt()]?.Invoke();
-            waitList[0].IncrementWaitTimer();
+
+            // Защитная проверка: есть ли вообще кто-то в списке ожидания ходов
+            if (waitList != null && waitList.Count > 0 && waitList[0] != null)
+            {
+                waitList[0].OnEndTurn?.Invoke();
+                OnEndPhase[currentPhase.ToInt()]?.Invoke();
+                waitList[0].IncrementWaitTimer();
+            }
+            else
+            {
+                Debug.LogWarning("[BattleSystem] Внимание! waitList пуст или его первый элемент null при завершении хода.");
+            }
+
             UpdateMoveOrder();
 
             if (lastPhase != BattlePhases.EnemyTurn)
@@ -708,10 +730,15 @@ public class BattleSystem : BasicSingleton<BattleSystem>
             gameManager.SaveBattleState();
         }
 
-        yield return waitList[0].EffectRoutine?.Invoke();
+        // Безопасный запуск корутины эффектов из waitList
+        if (waitList != null && waitList.Count > 0 && waitList[0]?.EffectRoutine != null)
+        {
+            yield return waitList[0].EffectRoutine.Invoke();
+        }
 
         ChangeBattlePhase();
     }
+
 
     public void UpdateMoveOrder(bool firstTime = false)
     {
@@ -741,9 +768,42 @@ public class BattleSystem : BasicSingleton<BattleSystem>
     {
         if (CurrentPhase < BattlePhases.BattleWin)
         {
-            waitList[0].OnStartTurn?.Invoke();
+            // 1. АВТОПРОПУСК: Проверяем, есть ли кто-то в очереди ходов
+            if (waitList != null && waitList.Count > 0)
+            {
+                // Берем конкретную сущность на вершине очереди (индекс 0)
+                var currentEntity = waitList[0];
+                var currentCharacter = currentEntity?.Character;
 
-            waitList[0]?.Move();
+                // Если персонаж на этом ходу мертв
+                if (currentCharacter != null && currentCharacter.IsDead)
+                {
+                    Debug.LogWarning($"[BattleSystem] Ход перешел к мертвецу {currentCharacter.name}. Автоматический пропуск хода.");
+
+                    // ИСПРАВЛЕНО: Передаем в метод удаления КОНКРЕТНУЮ сущность waitList[0], а не весь список!
+                    RemoveEntityFromWaitlist(currentEntity);
+
+                    // Если это был наш персонаж, регистрируем его смерть
+                    if (currentCharacter.IsPlayer())
+                    {
+                        RegisterPlayerDeath(currentCharacter as PlayerCharacter);
+                    }
+
+                    // Обновляем порядок ходов на сцене
+                    UpdateMoveOrder();
+
+                    // Безопасный переход к следующей фазе/персонажу
+                    ChangeBattlePhase();
+                    yield break; // ЖЕСТКИЙ ВЫХОД из корутины, чтобы предотвратить зацикливание!
+                }
+            }
+
+            // Оригинальный код запуска хода для живого персонажа
+            if (waitList != null && waitList.Count > 0)
+            {
+                waitList[0].OnStartTurn?.Invoke();
+                waitList[0]?.Move();
+            }
         }
 
         finishedTurn = false;
@@ -784,6 +844,8 @@ public class BattleSystem : BasicSingleton<BattleSystem>
 
         yield return null;
     }
+
+
 
     IEnumerator TickEffects(BaseCharacter affectedCharacters)
     {

@@ -2033,18 +2033,18 @@ namespace BrainFailProductions.PolyFew
                 {
                     if (quality == CombiningInformation.CompressionQuality.HIGH)
                     {
-                        return TextureFormat.ASTC_RGBA_4x4;
+                        return TextureFormat.ASTC_4x4;
                     }
 
                     else if (quality == CombiningInformation.CompressionQuality.MEDIUM)
                     {
-                        return TextureFormat.ASTC_RGBA_8x8;
+                        return TextureFormat.ASTC_8x8;
                     }
 
                     //Compression quality Low
                     else
                     {
-                        return TextureFormat.ASTC_RGBA_12x12;
+                        return TextureFormat.ASTC_12x12;
                     }
                 }
 
@@ -2082,18 +2082,18 @@ namespace BrainFailProductions.PolyFew
                 {
                     if (quality == CombiningInformation.CompressionQuality.HIGH)
                     {
-                        return TextureFormat.ASTC_RGB_4x4;
+                        return TextureFormat.ASTC_4x4;
                     }
 
                     else if (quality == CombiningInformation.CompressionQuality.MEDIUM)
                     {
-                        return TextureFormat.ASTC_RGB_8x8;
+                        return TextureFormat.ASTC_8x8;
                     }
 
                     //Compression quality Low
                     else
                     {
-                        return TextureFormat.ASTC_RGB_12x12;
+                        return TextureFormat.ASTC_12x12;
                     }
                 }
 
@@ -2128,11 +2128,11 @@ namespace BrainFailProductions.PolyFew
 
             else if (format == TextureFormat.PVRTC_RGBA4) { return true; }
 
-            else if (format == TextureFormat.ASTC_RGBA_4x4) { return true; }
+            else if (format == TextureFormat.ASTC_4x4) { return true; }
 
-            else if (format == TextureFormat.ASTC_RGBA_8x8) { return true; }
+            else if (format == TextureFormat.ASTC_8x8) { return true; }
 
-            else if (format == TextureFormat.ASTC_RGBA_12x12) { return true; }
+            else if (format == TextureFormat.ASTC_12x12) { return true; }
 
             else if (format == TextureFormat.DXT5) { return true; }
 
@@ -2146,11 +2146,11 @@ namespace BrainFailProductions.PolyFew
 
             else if (format == TextureFormat.PVRTC_RGB4) { return false; }
 
-            else if (format == TextureFormat.ASTC_RGB_4x4) { return false; }
+            else if (format == TextureFormat.ASTC_4x4) { return false; }
 
-            else if (format == TextureFormat.ASTC_RGB_8x8) { return false; }
+            else if (format == TextureFormat.ASTC_8x8) { return false; }
 
-            else if (format == TextureFormat.ASTC_RGB_12x12) { return false; }
+            else if (format == TextureFormat.ASTC_12x12) { return false; }
 
             else if (format == TextureFormat.DXT1Crunched) { return false; }
 

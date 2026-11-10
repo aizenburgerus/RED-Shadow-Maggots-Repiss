@@ -100,16 +100,27 @@ public class MaggotUpgradeUI : BasicSingleton<MaggotUpgradeUI>
         float expRequirement = TargetCharacter.GetExpRequiredForLevel(currentLevel, currentLevel + 1);
 
         levelChangeLabel.text = "Lvl " + currentLevel;
-        expBarLabel.text = (int)expProgress + "/" + (int)expRequirement;
 
-        currentExpFill.fillAmount = expProgress / expRequirement;
+        // ИСПРАВЛЕНИЕ: Проверяем максимальный уровень
+        if (expRequirement <= 0)
+        {
+            expBarLabel.text = "MAX";
+            currentExpFill.fillAmount = 1f;
+        }
+        else
+        {
+            expBarLabel.text = (int)expProgress + "/" + (int)expRequirement;
+            currentExpFill.fillAmount = expProgress / expRequirement;
+        }
+
         nextExpFill.enabled = false;
 
-        plusButton.SetButtonInteractable(data.Exp > 0);
+        plusButton.SetButtonInteractable(data.Exp > 0 && expRequirement > 0); // Нельзя качать дальше MAX
         minusButton.SetButtonInteractable(false);
 
         upgradeButton.interactable = false;
     }
+
 
     void UpdateUIElements()
     {
@@ -122,12 +133,26 @@ public class MaggotUpgradeUI : BasicSingleton<MaggotUpgradeUI>
         float expRequirement = TargetCharacter.GetExpRequiredForLevel(incomingLevel, incomingLevel + 1);
 
         levelChangeLabel.text = "Lvl " + currentLevel;
-        expBarLabel.text = (int)expProgress + "/" + (int)expRequirement;
+
+        // ИСПРАВЛЕНИЕ: Защита предпросмотра
+        if (expRequirement <= 0)
+        {
+            expBarLabel.text = "MAX";
+            nextExpFill.fillAmount = 1f;
+        }
+        else
+        {
+            expBarLabel.text = (int)expProgress + "/" + (int)expRequirement;
+            nextExpFill.fillAmount = expProgress / expRequirement;
+        }
 
         currentExpFill.enabled = incomingLevel <= currentLevel;
         if (currentExpFill.enabled)
         {
-            currentExpFill.fillAmount = currentExp / expRequirement;
+            if (expRequirement > 0)
+                currentExpFill.fillAmount = currentExp / expRequirement;
+            else
+                currentExpFill.fillAmount = 1f;
         }
         else
         {
@@ -142,7 +167,6 @@ public class MaggotUpgradeUI : BasicSingleton<MaggotUpgradeUI>
         nextAttackLabel.enabled = !currentExpFill.enabled;
 
         nextExpFill.enabled = ScrapOffered > 0;
-        nextExpFill.fillAmount = expProgress / expRequirement;
 
         upgradeButton.interactable = ScrapOffered > 0;
     }
@@ -193,6 +217,10 @@ public class MaggotUpgradeUI : BasicSingleton<MaggotUpgradeUI>
     
     IEnumerator UpgradeAnimation()
     {
+        if (upgradeAnimCurve == null)
+        {
+            upgradeAnimCurve = EasingAnimationCurve.EaseToAnimationCurve(upgradeAnimationEase);
+        }
         int startLevel = TargetCharacter.GetLevelFromExp(maggotState.Exp);
         int currentLevel = startLevel;
         float currentExp = maggotState.Exp;
@@ -216,9 +244,17 @@ public class MaggotUpgradeUI : BasicSingleton<MaggotUpgradeUI>
             currentLevel = TargetCharacter.GetLevelFromExp(xp);
             xp -= TargetCharacter.GetExpRequiredForLevel(0, currentLevel);
             var requiredExp = TargetCharacter.GetExpRequiredForLevel(currentLevel, currentLevel + 1);
-            currentExpFill.fillAmount = xp / requiredExp;
 
-            expBarLabel.text = (int)xp + "/" + (int)requiredExp;
+            if (requiredExp <= 0)
+            {
+                currentExpFill.fillAmount = 1f; // Полоса заполнена на максимум
+                expBarLabel.text = "MAX";
+            }
+            else
+            {
+                currentExpFill.fillAmount = xp / requiredExp;
+                expBarLabel.text = (int)xp + "/" + (int)requiredExp;
+            }
 
             yield return null;
         }

@@ -49,16 +49,21 @@ public class PlayerCharacter : BaseCharacter
     }
 
     protected override void OnCharacterLoaded(AsyncOperationHandle<GameObject> obj)
+{
+    base.OnCharacterLoaded(obj);
+    characterMesh.transform.eulerAngles = new Vector3(0, -90, 0);
+    waitEntity.IsPlayerControlled = true;
+    waitEntity.MovesOnPlayerTurn = true;
+    
+    // ИСПРАВЛЕНО: Безопасно подписываем метод Die на C# делегат OnDeath
+    if (OnDeath != null)
     {
-        base.OnCharacterLoaded(obj);
-
-        characterMesh.transform.eulerAngles = new Vector3(0, -90, 0);
-
-        waitEntity.IsPlayerControlled = true;
-        waitEntity.MovesOnPlayerTurn = true;
-
-        battleSystem.AddPlayerToWaitList(this, waitEntity, false);
+        OnDeath += Die;
     }
+
+    battleSystem.AddPlayerToWaitList(this, waitEntity, false);
+}
+
 
     protected override IEnumerator CreateBillboardUI()
     {
@@ -83,6 +88,8 @@ public class PlayerCharacter : BaseCharacter
         base.OnDisable();
         OnSelectedPlayerCharacterChange -= UpdateSelectedStatus;
         BattleSystem.OnStartPhase[BattlePhases.PlayerTurn.ToInt()] -= RemoveCanteenEffects;
+
+        OnDeath -= Die;
     }
 
     // Update is called once per frame
@@ -129,6 +136,12 @@ public class PlayerCharacter : BaseCharacter
 
     public override void BeginAttack(BaseCharacter target)
     {
+        if (health <= 0)
+        {
+            Debug.LogWarning($"[PlayerCharacter] {name} мертв и не может начать атаку.");
+            battleSystem.EndTurn();
+            return;
+        }
         var a = Reference.basicAttack;
         IncomingAttack.Ability = a;
         var t = Reference.basicAttack.effects[0].effectTarget.GetTargets(target, battleSystem.ActiveEnemy);
@@ -187,6 +200,18 @@ public class PlayerCharacter : BaseCharacter
 
     public override void ExecuteAttack()
     {
+        // ЗАЩИТА: Мертвый персонаж не может проводить атаку
+        if (health <= 0)
+        {
+            Debug.LogWarning($"[PlayerCharacter] Атака отменена. Персонаж {name} мертв.");
+
+            // Отписываемся от QTE, чтобы не было утечки событий
+            QuickTimeBase.OnExecuteAnyQuickTime -= ExecuteAttack;
+
+            // Экстренно завершаем ход через систему, чтобы бой не завис
+            battleSystem.EndTurn();
+            return;
+        }
         base.ExecuteAttack();
 
         if (rigAnim)

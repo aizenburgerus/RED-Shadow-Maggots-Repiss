@@ -886,18 +886,32 @@ public abstract class BaseCharacter : MonoBehaviour
     public IEnumerator TickEffects(float delay)
     {
         var list = new List<AppliedEffect>(Effects);
+
         foreach (var item in list)
         {
+            if (item == null) continue;
+
             var e = item.referenceEffect;
-            // Make sure the effect destroys itself
+            if (e == null) continue;
+
             if (e.tickPrefab) Instantiate(e.tickPrefab, transform);
             if (e.tickSound) JSAM.AudioManager.PlaySound(e.tickSound);
 
-            item.Tick();
+            // ЗАЩИТА: Оборачиваем выполнение тика эффекта
+            try
+            {
+                item.Tick();
+            }
+            catch (System.Exception ex)
+            {
+                // Здесь мы используем item.ToString() вместо item.Name, чтобы компилятор не ругался
+                Debug.LogError($"[BaseCharacter] Ошибка при тике эффекта {item}: {ex.Message}\n{ex.StackTrace}");
+            }
 
             yield return new WaitForSeconds(delay < e.TickAnimationTime ? delay : e.TickAnimationTime);
         }
     }
+
 
     public virtual void Heal(float healthGain)
     {

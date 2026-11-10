@@ -21,7 +21,27 @@ public class DamagePerTurnEffect : BaseDamageEffect
     public override string GetEffectDescription(AppliedEffect effect)
     {
         var d = base.GetEffectDescription(effect);
-        d = d.Replace("$VALUE", effect.cachedValues[0].Value.FormatToDecimal());
+
+        // ЗАЩИТА: Проверяем, что эффект и его формула не null
+        if (effect == null || effect.value == null) return d;
+
+        float actualValue = 0f;
+
+        // 1. Если кэш уже создан, берем значение оттуда
+        if (effect.cachedValues != null && effect.cachedValues.Count > 0)
+        {
+            actualValue = effect.cachedValues[0].Value;
+        }
+        // 2. Если кэша еще нет, рассчитываем его динамически из формулы
+        else if (effect.targetProps != null)
+        {
+            actualValue = effect.value.GetValue(effect.targetProps);
+        }
+
+        // Безопасно форматируем и вставляем значение в описание
+        d = d.Replace("$VALUE", actualValue.FormatToDecimal());
+
         return d;
     }
+
 }

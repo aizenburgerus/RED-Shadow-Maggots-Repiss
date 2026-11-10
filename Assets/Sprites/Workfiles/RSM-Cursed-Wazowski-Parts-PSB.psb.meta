@@ -70,12 +70,13 @@ ScriptedImporter:
     compressionQualitySet: 0
     textureFormatSet: 0
     applyGammaDecoding: 0
-  spriteImportData:
+  singleSpriteImportData:
   - name: 
     originalName: 
     pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 0
@@ -92,13 +93,14 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
     spritePosition: {x: 0, y: 0}
-  mosaicSpriteImportData: []
-  rigSpriteImportData:
+  multiSpriteImportData: []
+  layeredSpriteImportData:
   - name: SHIELD
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 2970
@@ -120,10 +122,11 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 1395
-      y: 1131
+      y: 1129
       width: 1092
       height: 1188
     spriteID: 6f1e693f7a96012458d521e394426bd0
@@ -134,17 +137,18 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 1395, y: 1131}
+    uvTransform: {x: 1395, y: 1129}
     spritePosition: {x: 1147, y: 1792}
   - name: SHIELD ARM FOREARM
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 1395
-      y: 2327
+      y: 2325
       width: 1350
       height: 922
     spriteID: 1c744f3db3b53e840aca740e438a4296
@@ -155,13 +159,14 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 1395, y: 2327}
+    uvTransform: {x: 1395, y: 2325}
     spritePosition: {x: 1105, y: 1161}
   - name: SHIELD ARM SHOULDER
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 800
@@ -183,6 +188,7 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 800
@@ -204,6 +210,7 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -225,6 +232,7 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -246,6 +254,7 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 800
@@ -267,10 +276,11 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 1891
-      y: 3257
+      y: 3255
       width: 602
       height: 636
     spriteID: 4547bb6a2d07a0f43b5cd17802418ac3
@@ -281,13 +291,14 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 1891, y: 3257}
+    uvTransform: {x: 1891, y: 3255}
     spritePosition: {x: 1742, y: 1140}
   - name: AXE ARM
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -309,10 +320,11 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 1395
-      y: 3257
+      y: 3255
       width: 488
       height: 824
     spriteID: b68698349e5fde548b32b95635a51e40
@@ -323,13 +335,14 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 1395, y: 3257}
+    uvTransform: {x: 1395, y: 3255}
     spritePosition: {x: 524, y: 885}
   - name: BACK THIGH
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 2970
@@ -351,6 +364,7 @@ ScriptedImporter:
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 1395
@@ -365,17 +379,328 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 1395, y: 4}
-    spritePosition: {x: 665, y: 339}
-  characterData:
+    uvTransform: {x: 1395, y: 2}
+    spritePosition: {x: 665, y: 341}
+  spriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+    spritePosition: {x: 0, y: 0}
+  rigSpriteImportData:
+  - name: SHIELD
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2970
+      y: 4
+      width: 957
+      height: 958
+    spriteID: 8308da9c23997a9458084010a39b03fa
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2970, y: 4}
+    spritePosition: {x: 1545, y: 1161}
+  - name: FOREHAIR
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1395
+      y: 1129
+      width: 1092
+      height: 1188
+    spriteID: 6f1e693f7a96012458d521e394426bd0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1395, y: 1129}
+    spritePosition: {x: 1147, y: 1792}
+  - name: SHIELD ARM FOREARM
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1395
+      y: 2325
+      width: 1350
+      height: 922
+    spriteID: 1c744f3db3b53e840aca740e438a4296
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1395, y: 2325}
+    spritePosition: {x: 1105, y: 1161}
+  - name: SHIELD ARM SHOULDER
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 800
+      y: 3299
+      width: 558
+      height: 448
+    spriteID: 02e6c1a3fbd73984dad862b5f0ff3c2a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 800, y: 3299}
+    spritePosition: {x: 1887, y: 1815}
+  - name: EYELIDS TOP
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 800
+      y: 3755
+      width: 573
+      height: 213
+    spriteID: 49f6b926ec0493641a8f963a777a97ef
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 800, y: 3755}
+    spritePosition: {x: 1073, y: 2120}
+  - name: EYELIDS BOTTOM
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 3911
+      width: 576
+      height: 124
+    spriteID: af1689212c6bf7b44854c511bf622750
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 3911}
+    spritePosition: {x: 1074, y: 2091}
+  - name: HEAD
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 1383
+      height: 1873
+    spriteID: dd31c65582862324d93883b832ae49e1
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+    spritePosition: {x: 992, y: 1279}
+  - name: FRONT LEG
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 800
+      y: 1885
+      width: 560
+      height: 1406
+    spriteID: 60498234960c7cd4580bbed538950f8d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 800, y: 1885}
+    spritePosition: {x: 1861, y: 103}
+  - name: FRONG THIGH
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1891
+      y: 3255
+      width: 602
+      height: 636
+    spriteID: 4547bb6a2d07a0f43b5cd17802418ac3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1891, y: 3255}
+    spritePosition: {x: 1742, y: 1140}
+  - name: AXE ARM
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1885
+      width: 788
+      height: 2018
+    spriteID: 5f650d80ae4976844a718c4f884be3d4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1885}
+    spritePosition: {x: 520, y: 1837}
+  - name: BACK LEG
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1395
+      y: 3255
+      width: 488
+      height: 824
+    spriteID: b68698349e5fde548b32b95635a51e40
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1395, y: 3255}
+    spritePosition: {x: 524, y: 885}
+  - name: BACK THIGH
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2970
+      y: 970
+      width: 862
+      height: 428
+    spriteID: c93626ec3752ba341a53d9d6d9f1c803
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2970, y: 970}
+    spritePosition: {x: 751, y: 1454}
+  - name: MAIN DROP SHADOW
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1395
+      y: 4
+      width: 1567
+      height: 1117
+    spriteID: 7adea68ade683e744a918a3c7245c87c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1395, y: 2}
+    spritePosition: {x: 665, y: 341}
+  sharedRigSpriteImportData: []
+  mosaicSpriteImportData: []
+  sharedRigCharacterData:
     bones: []
     parts: []
     dimension: {x: 0, y: 0}
     characterGroups: []
     pivot: {x: 0, y: 0}
     boneReadOnly: 0
-  sharedRigSpriteImportData: []
-  sharedRigCharacterData:
+  characterData:
     bones: []
     parts: []
     dimension: {x: 0, y: 0}
@@ -392,22 +717,30 @@ ScriptedImporter:
   generatePhysicsShape: 0
   paperDollMode: 0
   keepDupilcateSpriteName: 0
+  generateTileAssets: 0
+  tilePaletteCellLayout: 0
+  tilePaletteHexagonLayout: 0
+  tilePaletteCellSize: {x: 1, y: 1, z: 0}
+  tilePaletteCellSizing: 0
+  transparencySortMode: 0
+  transparencySortAxis: {x: 0, y: 0, z: 1}
+  tileTemplate: {instanceID: 0}
+  padding: 4
+  spriteSizeExpand: 0
   skeletonAssetReferenceID: 
   pipeline: {instanceID: 0}
   pipelineVersion: 
-  padding: 4
-  spriteSizeExpand: 0
   spriteCategoryList:
     categories: []
   spritePackingTag: 
   resliceFromLayer: 0
-  mosaicPSDLayers: []
-  rigPSDLayers:
+  pSDLayerImportSetting: []
+  psdLayers:
   - name: MAIN
     spriteName: 
     isGroup: 1
     parentIndex: -1
-    spriteID: acf9a7abb3711d64bae4a0def4f4b9a4
+    spriteID: 57e45439ae482da4a903b1bf080ea961
     layerID: 54
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -417,7 +750,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 3b2941d8f2fc13644a8c6665343c1084
+    spriteID: 4f3dd70e4121cc14a8b76a1217e6d79e
     layerID: 396
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -437,7 +770,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 0
     parentIndex: 1
-    spriteID: e0691754954eb584cbec3933727dc99d
+    spriteID: 42e80cebb93393c44b00910f9b0c14d2
     layerID: 418
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -447,7 +780,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 34f47a2fec850d048b2286d51445ab99
+    spriteID: 841bbe95c997e8b49ae1f532858eb8ad
     layerID: 613
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -459,7 +792,7 @@ ScriptedImporter:
     parentIndex: 4
     spriteID: 6f1e693f7a96012458d521e394426bd0
     layerID: 255
-    mosaicPosition: {x: 1395, y: 1131}
+    mosaicPosition: {x: 1395, y: 1129}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -467,7 +800,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 2e93eb6eb66d5b04cb743a8c1f8ae9fb
+    spriteID: 49cd221fe9c90d843811ea6cf596f649
     layerID: 253
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -479,7 +812,7 @@ ScriptedImporter:
     parentIndex: 6
     spriteID: 1c744f3db3b53e840aca740e438a4296
     layerID: 448
-    mosaicPosition: {x: 1395, y: 2327}
+    mosaicPosition: {x: 1395, y: 2325}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -497,7 +830,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 0
     parentIndex: 6
-    spriteID: e282ece56d31ad544af5cafcad04f94d
+    spriteID: a33ecbfb0ede1c74f86636f1081e29b0
     layerID: 409
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -507,7 +840,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 5c8599e0f62e7274595a8a5ab9325ea4
+    spriteID: bf93071f89d8ecd4594cb43511fc2cdd
     layerID: 458
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -547,7 +880,239 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 3d01b02ab92c65b48a8560e3a112578a
+    spriteID: e0511dcdef33f7b4bae1c0e2ce502233
+    layerID: 580
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: FRONT LEG
+    spriteName: FRONT LEG
+    isGroup: 0
+    parentIndex: 14
+    spriteID: 60498234960c7cd4580bbed538950f8d
+    layerID: 518
+    mosaicPosition: {x: 800, y: 1885}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: FRONG THIGH
+    spriteName: FRONG THIGH
+    isGroup: 0
+    parentIndex: 14
+    spriteID: 4547bb6a2d07a0f43b5cd17802418ac3
+    layerID: 579
+    mosaicPosition: {x: 1891, y: 3255}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: AXE ARM
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 061fa41df92866e43b8df906353325d7
+    layerID: 462
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: AXE ARM
+    spriteName: AXE ARM
+    isGroup: 0
+    parentIndex: 17
+    spriteID: 5f650d80ae4976844a718c4f884be3d4
+    layerID: 247
+    mosaicPosition: {x: 4, y: 1885}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: BACK LEG
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 7700cbb3386b0024f83a92ff35eb398d
+    layerID: 545
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: BACK LEG
+    spriteName: BACK LEG
+    isGroup: 0
+    parentIndex: 19
+    spriteID: b68698349e5fde548b32b95635a51e40
+    layerID: 544
+    mosaicPosition: {x: 1395, y: 3255}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: BACK THIGH
+    spriteName: BACK THIGH
+    isGroup: 0
+    parentIndex: 19
+    spriteID: c93626ec3752ba341a53d9d6d9f1c803
+    layerID: 489
+    mosaicPosition: {x: 2970, y: 970}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: MAIN DROP SHADOW
+    spriteName: MAIN DROP SHADOW
+    isGroup: 0
+    parentIndex: 0
+    spriteID: 7adea68ade683e744a918a3c7245c87c
+    layerID: 343
+    mosaicPosition: {x: 1395, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  mosaicPSDLayers: []
+  rigPSDLayers:
+  - name: MAIN
+    spriteName: 
+    isGroup: 1
+    parentIndex: -1
+    spriteID: 57e45439ae482da4a903b1bf080ea961
+    layerID: 54
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: SHIELD
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 4f3dd70e4121cc14a8b76a1217e6d79e
+    layerID: 396
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: SHIELD
+    spriteName: SHIELD
+    isGroup: 0
+    parentIndex: 1
+    spriteID: 8308da9c23997a9458084010a39b03fa
+    layerID: 440
+    mosaicPosition: {x: 2970, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: SHIELD DROP SHADOW
+    spriteName: 
+    isGroup: 0
+    parentIndex: 1
+    spriteID: 42e80cebb93393c44b00910f9b0c14d2
+    layerID: 418
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 0
+  - name: FOREHAIR
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 841bbe95c997e8b49ae1f532858eb8ad
+    layerID: 613
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: FOREHAIR
+    spriteName: FOREHAIR
+    isGroup: 0
+    parentIndex: 4
+    spriteID: 6f1e693f7a96012458d521e394426bd0
+    layerID: 255
+    mosaicPosition: {x: 1395, y: 1131}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: SHIELD ARM
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 49cd221fe9c90d843811ea6cf596f649
+    layerID: 253
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: SHIELD ARM FOREARM
+    spriteName: SHIELD ARM FOREARM
+    isGroup: 0
+    parentIndex: 6
+    spriteID: 1c744f3db3b53e840aca740e438a4296
+    layerID: 448
+    mosaicPosition: {x: 1395, y: 2327}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: SHIELD ARM SHOULDER
+    spriteName: SHIELD ARM SHOULDER
+    isGroup: 0
+    parentIndex: 6
+    spriteID: 02e6c1a3fbd73984dad862b5f0ff3c2a
+    layerID: 457
+    mosaicPosition: {x: 800, y: 3299}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: SHIELD ARM DROP SHADOW
+    spriteName: 
+    isGroup: 0
+    parentIndex: 6
+    spriteID: a33ecbfb0ede1c74f86636f1081e29b0
+    layerID: 409
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 0
+  - name: HEAD
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: bf93071f89d8ecd4594cb43511fc2cdd
+    layerID: 458
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 1
+  - name: EYELIDS TOP
+    spriteName: EYELIDS TOP
+    isGroup: 0
+    parentIndex: 10
+    spriteID: 49f6b926ec0493641a8f963a777a97ef
+    layerID: 625
+    mosaicPosition: {x: 800, y: 3755}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: EYELIDS BOTTOM
+    spriteName: EYELIDS BOTTOM
+    isGroup: 0
+    parentIndex: 10
+    spriteID: af1689212c6bf7b44854c511bf622750
+    layerID: 624
+    mosaicPosition: {x: 4, y: 3911}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: HEAD
+    spriteName: HEAD
+    isGroup: 0
+    parentIndex: 10
+    spriteID: dd31c65582862324d93883b832ae49e1
+    layerID: 241
+    mosaicPosition: {x: 4, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: FRONT LEG
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: e0511dcdef33f7b4bae1c0e2ce502233
     layerID: 580
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -577,7 +1142,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 416b09f24154614429c8e1dd578dfa08
+    spriteID: 061fa41df92866e43b8df906353325d7
     layerID: 462
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -597,7 +1162,7 @@ ScriptedImporter:
     spriteName: 
     isGroup: 1
     parentIndex: 0
-    spriteID: 68ce0a4d8828fff4ab5b400586192f01
+    spriteID: 7700cbb3386b0024f83a92ff35eb398d
     layerID: 545
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
@@ -634,7 +1199,6 @@ ScriptedImporter:
     isImported: 1
     isVisible: 1
   sharedRigPSDLayers: []
-  pSDLayerImportSetting: []
   importFileNodeState: 1
   platformSettingsDirtyTick: 0
   spriteSizeExpandChanged: 0

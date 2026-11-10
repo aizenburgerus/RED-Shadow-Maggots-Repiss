@@ -88,19 +88,40 @@ public class CanteenUI : BaseGameUI
     public void UpdateCanteenCount()
     {
         var count = canteenSystem.AvailableCanteens;
-
         canteenCountText.text = count.ToString();
 
-        for (int i = 0; i < count; i++)
+        // ЗАЩИТА: Проверяем, назначен ли вообще массив иконок в инспекторе
+        if (canteenIcons == null || canteenIcons.Length == 0)
         {
-            canteenIcons[i].SetActive(true);
+            Debug.LogError("[CanteenUI] Массив canteenIcons пуст или не привязан в Инспекторе Unity!");
+            return;
         }
 
+        // ИСПРАВЛЕНО: Цикл не пойдет дальше, чем есть элементов в массиве canteenIcons
+        for (int i = 0; i < count; i++)
+        {
+            if (i >= canteenIcons.Length)
+            {
+                Debug.LogWarning($"[CanteenUI] Количество доступных фляг ({count}) превышает размер массива UI-иконок ({canteenIcons.Length})!");
+                break; // Экстренно выходим из цикла, чтобы не вызвать IndexOutOfRangeException
+            }
+
+            if (canteenIcons[i] != null)
+            {
+                canteenIcons[i].SetActive(true);
+            }
+        }
+
+        // Второй цикл оставляем как есть, он безопасен
         for (int i = count; i < canteenIcons.Length; i++)
         {
-            canteenIcons[i].SetActive(false);
+            if (i >= 0 && canteenIcons[i] != null)
+            {
+                canteenIcons[i].SetActive(false);
+            }
         }
     }
+
 
     public void UseCanteen()
     {

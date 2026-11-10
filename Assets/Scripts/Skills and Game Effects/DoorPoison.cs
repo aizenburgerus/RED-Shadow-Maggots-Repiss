@@ -53,7 +53,7 @@ public class DoorPoison : DamagePerTurnEffect
         for (int i = 0; i < rigidbodies.Length; i++)
         {
             Vector3 direction = (rigidbodies[i].position - explosionPosition).normalized;
-            rigidbodies[i].velocity = direction * explosionForce;
+            rigidbodies[i].linearVelocity = direction * explosionForce;
             rigidbodies[i].transform.DOScale(0.01f, doorLifetime - doorShrinkDelay).SetDelay(doorShrinkDelay);
         }
         damageDelegate.Invoke();

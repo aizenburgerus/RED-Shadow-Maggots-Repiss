@@ -76,7 +76,7 @@ public class TreasureNode : BasicSingleton<TreasureNode>
             cardRigidbodies[i].transform.localPosition = Vector3.zero;
             cardRigidbodies[i].transform.localEulerAngles = new Vector3(0, -90 + -15 + 15 * i, -90);
             cardRigidbodies[i].isKinematic = false;
-            cardRigidbodies[i].velocity = Vector3.zero;
+            cardRigidbodies[i].linearVelocity = Vector3.zero;
             cardRigidbodies[i].AddForce(-cardRigidbodies[i].transform.up * cardForce, ForceMode.Impulse);
 
             yield return new WaitForSeconds(cardFlipDelay);

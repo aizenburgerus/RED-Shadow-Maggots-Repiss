@@ -35,7 +35,7 @@ public class SimpleHealth : MonoBehaviour
     /// <param name="character">The character for which to initialize the health bar.</param>
     public void InitializeWithCharacter(BaseCharacter character)
     {
-        //create instance of the material
+        // create instance of the material
         healthBar.material = new Material(_healthBarMaterial);
 
         baseCharacter = character;
@@ -44,17 +44,21 @@ public class SimpleHealth : MonoBehaviour
         baseCharacter.onSetHealth += OnSetHealth;
         baseCharacter.OnHeal += OnHeal;
 
-        //set "steps" property (there will be new sector for each 100 health points)
-        healthBar.material.SetFloat("_Steps", character.MaxHealth / HEALTH_STEPS);
+        // ИСПРАВЛЕНИЕ: Рассчитываем количество секторов
+        float stepsValue = character.MaxHealth / HEALTH_STEPS;
 
-        //// set color of the health bar depending on the character type
-        //if (character is EnemyCharacter)
-        //{
-        //    healthBar.material.SetColor("_Color", Color.red);
-        //}
+        // Если это босс (у него очень много здоровья), отключаем деления на сектора (ставим 0 или 1), 
+        // чтобы шейдер не умножал текстуру и полоса плавно уменьшалась
+        if (stepsValue > 5f)
+        {
+            stepsValue = 0f; // 0 отключит насечки на полоске босса, сделав её сплошной и плавной
+        }
+
+        healthBar.material.SetFloat("_Steps", stepsValue);
 
         OnSetHealth();
     }
+
 
     /// <summary>
     /// Removes event listeners from the character when the health bar is disabled.

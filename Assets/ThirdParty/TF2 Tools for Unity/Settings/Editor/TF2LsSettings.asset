@@ -15,7 +15,7 @@ MonoBehaviour:
   enableFlexesWhenAnimating: 0
   packagePath: Assets/TF2Ls for Unity
   helpTextSize: 12
-  tfPath: D:/Steam Games/steamapps/common/Team Fortress 2/tf
+  tfPath: E:/Steam/steamapps/common/Team Fortress 2/tf
   unlockSystemObjects: 0
   hlExtractExe: {fileID: 102900000, guid: beb73b284577c164380e364d55bc4ad9, type: 3}
   vtfCmdExe: {fileID: 102900000, guid: c53a278a02d604e428be2503bcf98e4a, type: 3}
