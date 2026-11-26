@@ -123,7 +123,7 @@ public class InGameSettingsUI : BaseGameUI
     {
         HideAllUIExcept(0);
     }
-    
+
     public void ShowVolumeUI()
     {
         HideAllUIExcept(1);
