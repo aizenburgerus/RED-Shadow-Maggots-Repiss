@@ -25,8 +25,14 @@ public class InGameSettingsUI : BaseGameUI
         AudioManager.OnMasterVolumeChanged += UpdateMaster;
         AudioManager.OnMusicVolumeChanged += UpdateMusic;
         AudioManager.OnSoundVolumeChanged += UpdateSound;
+        AudioManager.OnVoiceVolumeChanged += UpdateVoice;
 
-        qualitySlider.value = QualitySettings.GetQualityLevel();
+        qualitySlider.minValue = 0;
+        qualitySlider.maxValue = QualitySettings.names.Length - 1;
+        qualitySlider.wholeNumbers = true;
+        qualitySlider.onValueChanged.AddListener(SetQualityLevel);
+        optimizedCanvas.onCanvasShow.AddListener(RefreshSettingsUI);
+        optimizedCanvas.onCanvasStartHide.AddListener(SaveSettings);
     }
 
     private void OnDisable()
@@ -34,7 +40,50 @@ public class InGameSettingsUI : BaseGameUI
         AudioManager.OnMasterVolumeChanged -= UpdateMaster;
         AudioManager.OnMusicVolumeChanged -= UpdateMusic;
         AudioManager.OnSoundVolumeChanged -= UpdateSound;
-        AudioManager.InternalInstance.SaveVolumeSettings();
+        AudioManager.OnVoiceVolumeChanged -= UpdateVoice;
+        qualitySlider.onValueChanged.RemoveListener(SetQualityLevel);
+        optimizedCanvas.onCanvasShow.RemoveListener(RefreshSettingsUI);
+        optimizedCanvas.onCanvasStartHide.RemoveListener(SaveSettings);
+        SaveSettings();
+    }
+
+    void OnApplicationPause(bool paused)
+    {
+        if (paused) SaveSettings();
+    }
+
+    void OnApplicationFocus(bool focused)
+    {
+        if (!focused) SaveSettings();
+    }
+
+    void SaveSettings()
+    {
+        if (!AudioManager.Instance) return;
+        var audio = AudioManager.InternalInstance;
+        if (audio) audio.SaveVolumeSettings();
+    }
+
+    void RefreshSettingsUI()
+    {
+        qualitySlider.SetValueWithoutNotify(QualitySettings.GetQualityLevel());
+        var graphics = graphicsSettings;
+        bool hasPostProcessing = graphics && graphics.PostProcessing;
+        postProcessingToggle.interactable = hasPostProcessing;
+        antiAliasingToggle.interactable = hasPostProcessing;
+        if (hasPostProcessing)
+        {
+            postProcessingToggle.SetIsOnWithoutNotify(graphics.PostProcessing.enabled);
+            antiAliasingToggle.SetIsOnWithoutNotify(graphics.PostProcessing.antialiasingMode !=
+                UnityEngine.Rendering.PostProcessing.PostProcessLayer.Antialiasing.None);
+        }
+        UpdateVolumeSliders();
+    }
+
+    void SetQualityLevel(float level)
+    {
+        if (!optimizedCanvas.IsVisible || !graphicsSettings) return;
+        graphicsSettings.SetGraphicsLevel(level);
     }
 
     public override void ShowUI()
@@ -60,20 +109,14 @@ public class InGameSettingsUI : BaseGameUI
 
     public void TogglePostProcessing()
     {
-        graphicsSettings.PostProcessing.enabled = !graphicsSettings.PostProcessing.enabled;
+        if (!optimizedCanvas.IsVisible || !graphicsSettings) return;
+        graphicsSettings.SetPostProcessing(postProcessingToggle.isOn);
     }
 
     public void ToggleAntiAliasing()
     {
-        switch (graphicsSettings.PostProcessing.antialiasingMode)
-        {
-            case UnityEngine.Rendering.PostProcessing.PostProcessLayer.Antialiasing.None:
-            graphicsSettings.PostProcessing.antialiasingMode = UnityEngine.Rendering.PostProcessing.PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
-                break;
-            case UnityEngine.Rendering.PostProcessing.PostProcessLayer.Antialiasing.FastApproximateAntialiasing:
-            graphicsSettings.PostProcessing.antialiasingMode = UnityEngine.Rendering.PostProcessing.PostProcessLayer.Antialiasing.None;
-                break;
-        }
+        if (!optimizedCanvas.IsVisible || !graphicsSettings) return;
+        graphicsSettings.SetAntiAliasing(antiAliasingToggle.isOn);
     }
 
     public void ShowGraphicsUI()
@@ -86,10 +129,10 @@ public class InGameSettingsUI : BaseGameUI
         HideAllUIExcept(1);
     }
 
-    void UpdateMaster(float vol) => masterSlider.value = vol;
-    void UpdateMusic(float vol) => musicSlider.value = vol;
-    void UpdateSound(float vol) => soundSlider.value = vol;
-    void UpdateVoice(float vol) => voiceSlider.value = vol;
+    void UpdateMaster(float vol) => masterSlider.SetValueWithoutNotify(vol);
+    void UpdateMusic(float vol) => musicSlider.SetValueWithoutNotify(vol);
+    void UpdateSound(float vol) => soundSlider.SetValueWithoutNotify(vol);
+    void UpdateVoice(float vol) => voiceSlider.SetValueWithoutNotify(vol);
 
     void UpdateVolumeSliders()
     {
