@@ -44,19 +44,25 @@ public class MobileShadowCaster : MonoBehaviour
     {
         lowQuality = level < 3;
 
-        var castMode = lowQuality ? ShadowCastingMode.Off : ShadowCastingMode.On;
+        bool useSpriteShadow = lowQuality && shadowOrigin && renderer;
+        var castMode = useSpriteShadow ? ShadowCastingMode.Off : ShadowCastingMode.On;
 
         for (int i = 0; i < defaultRenderers.Length; i++)
         {
-            defaultRenderers[i].shadowCastingMode = castMode;
+            if (defaultRenderers[i]) defaultRenderers[i].shadowCastingMode = castMode;
         }
 
-        renderer.enabled = lowQuality;
+        if (renderer) renderer.enabled = useSpriteShadow;
     }
 
     private void Update()
     {
-        if (!lowQuality) return;
+        if (!lowQuality || !renderer) return;
+        if (!shadowOrigin)
+        {
+            renderer.enabled = false;
+            return;
+        }
 
         Ray ray = new Ray();
         ray.direction = Vector3.down;
