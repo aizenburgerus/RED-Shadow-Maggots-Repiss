@@ -68,6 +68,7 @@ public class EnemyController : BasicSingleton<EnemyController>
     public void AssignEnemies(EnemyCharacter[] enemyCharacters)
     {
         Enemies = enemyCharacters;
+        enemyList.Clear();
     }
 
     public void CalculateSkillUsage()

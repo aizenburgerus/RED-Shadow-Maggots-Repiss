@@ -27,7 +27,7 @@ public class CharacterLoader : BasicSingleton<CharacterLoader>
     List<AsyncOperationHandle<CharacterObject>> playerHandleToIndex = new List<AsyncOperationHandle<CharacterObject>>();
     List<AsyncOperationHandle<CharacterObject>> enemyHandleToIndex = new List<AsyncOperationHandle<CharacterObject>>();
 
-    EnemyCharacter[] enemies = new EnemyCharacter[3];
+    EnemyCharacter[] enemies = new EnemyCharacter[0];
 
     public void LoadAllPlayerCharacters()
     {
@@ -121,9 +121,8 @@ public class CharacterLoader : BasicSingleton<CharacterLoader>
 
     public void LoadAllEnemies()
     {
-        enemiesLoaded = 0;
-
         var currentWave = BattleData.EnemyWaves[BattleData.WaveCount];
+        PrepareEnemyLoading(currentWave.EnemyGUIDs.Count);
 
         float enemyCount = currentWave.EnemyGUIDs.Count(e => e != null);
         float increment = 1f / (enemyCount + 1);
@@ -145,6 +144,7 @@ public class CharacterLoader : BasicSingleton<CharacterLoader>
 
     public void LoadAllEnemies(WaveObject wave)
     {
+        PrepareEnemyLoading(wave.Enemies.Length);
         float enemyCount = wave.Enemies.Count(e => e != null);
 
         float increment = 1f / (enemyCount + 1);
@@ -159,6 +159,14 @@ public class CharacterLoader : BasicSingleton<CharacterLoader>
             StartCoroutine(LoadEnemy(i, spawnPos, opHandle));
             enemyHandleToIndex.Add(opHandle);
         }
+    }
+
+    void PrepareEnemyLoading(int count)
+    {
+        enemiesLoaded = 0;
+        foreach (var handle in enemyHandleToIndex) Addressables.Release(handle);
+        enemyHandleToIndex.Clear();
+        enemies = new EnemyCharacter[count];
     }
 
     IEnumerator LoadEnemy(int index, Vector3 spawnPos, AsyncOperationHandle<CharacterObject> obj)
