@@ -60,6 +60,41 @@ public class FlatValue : BaseEffectValue
     }
 }
 
+// Kept under its original name so existing SerializeReference ability data can load.
+[System.Serializable]
+public class StatScaledValue : BaseEffectValue
+{
+    [SerializeReference] public BaseEffectValue Value;
+    [SerializeReference] public BaseGameStat Stat;
+    [SerializeReference] public BaseEffectTarget StatSource;
+
+    public override float GetValue(TargetProps targetProps)
+    {
+        var targets = StatSource.GetTargets(targetProps.Caster, targetProps.Targets[0]);
+        return Value.GetValue(targetProps) * Stat.GetValue(new TargetProps { Caster = targetProps.Caster, Targets = targets });
+    }
+
+    public override string Descriptor => Value.Descriptor + " of " + Stat.Name;
+
+    public override string ProcessSkillDescription(BaseEffectTarget target, string description) =>
+        description.Replace("$VALUE", Descriptor);
+
+    public override BattleState.SerializedValue Serialize() => new BattleState.SerializedValue
+    {
+        Type = nameof(StatScaledValue),
+        Values = new[] { ((int)ValueType).ToString(), Stat.GetType().FullName, StatSource.GetType().FullName },
+        NestedValues = new[] { Value.Serialize() }
+    };
+
+    public static StatScaledValue Deserialize(BattleState.SerializedValue value) => new StatScaledValue
+    {
+        Value = BattleState.SerializedValue.Deserialize(value.NestedValues[0]),
+        ValueType = (ValueType)System.Convert.ToInt32(value.Values[0]),
+        Stat = (BaseGameStat)System.Activator.CreateInstance(System.Type.GetType(value.Values[1])),
+        StatSource = (BaseEffectTarget)System.Activator.CreateInstance(System.Type.GetType(value.Values[2]))
+    };
+}
+
 public static class ValueExtensions
 {
     public static string FormatTo(this float value, ValueType valueType)
