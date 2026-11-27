@@ -53,6 +53,9 @@ public class BaseShieldEffect : BaseGameEffect
     public override void OnExpire(AppliedEffect effect)
     {
         base.OnExpire(effect);
+        effect.Target.RemoveShield(effect);
+        if (effect.customCallbacks != null)
+            effect.Target.OnShieldBroken -= effect.customCallbacks[0];
         Destroy(effect.instantiatedObjects[0]);
     }
 
