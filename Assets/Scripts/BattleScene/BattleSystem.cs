@@ -469,7 +469,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
     /// </summary>
     public void SwitchTargets()
     {
-        if (playerTargets.enemy.IsDead)
+        if (playerTargets.enemy && playerTargets.enemy.IsDead)
         {
             var newTarget = enemyController.RandomEnemy;
             if (newTarget)
@@ -478,7 +478,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
                 playerTargets.enemy.ShowCharacterUI();
             }
         }
-        else if (playerTargets.player.IsDead)
+        else if (playerTargets.player && playerTargets.player.IsDead)
         {
             if (PlayersAlive)
             {
