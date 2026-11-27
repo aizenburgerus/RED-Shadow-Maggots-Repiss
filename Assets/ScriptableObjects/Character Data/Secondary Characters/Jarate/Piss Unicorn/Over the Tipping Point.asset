@@ -107,7 +107,8 @@ MonoBehaviour:
         Value:
           rid: 3629733565930668217
         ValueType: 0
-        Stat: {fileID: 11400000, guid: fe45de3acb5849f499215f92adf9f519, type: 2}
+        Stat:
+          rid: 3629733565930668222
         StatSource:
           rid: 3629733530499547212
     - rid: 3629733530499547212
@@ -124,9 +125,9 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733530499547214
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value:
+        Flat:
           rid: 3629733565930668219
         ValueType: 0
     - rid: 3629733530499547215
@@ -145,7 +146,8 @@ MonoBehaviour:
         Value:
           rid: 3629733565930668220
         ValueType: 0
-        Stat: {fileID: 11400000, guid: 27bd3f15cfe40124b9dd647702922259, type: 2}
+        Stat:
+          rid: 3629733565930668223
         StatSource:
           rid: 3629733530499547218
     - rid: 3629733530499547218
@@ -162,9 +164,9 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733530499547225
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value:
+        Flat:
           rid: 3629733565930668221
         ValueType: 0
     - rid: 3629733530499547239
@@ -192,9 +194,9 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733530499547242
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value:
+        Flat:
           rid: 3629733565930668218
         ValueType: 0
     - rid: 3629733530499547243
@@ -238,3 +240,11 @@ MonoBehaviour:
           rid: -2
         ValueType: 0
         Flat: 0.05
+    - rid: 3629733565930668222
+      type: {class: AttackStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+    - rid: 3629733565930668223
+      type: {class: MaxHealthStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
