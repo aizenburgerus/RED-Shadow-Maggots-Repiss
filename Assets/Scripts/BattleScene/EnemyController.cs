@@ -99,6 +99,12 @@ public class EnemyController : BasicSingleton<EnemyController>
 
     public void MakeYourMove()
     {
+        if (!EnsureLivingAttackTarget())
+        {
+            battleSystem.EndTurn();
+            return;
+        }
+
 #if UNITY_EDITOR
         if (disableSkillUsage)
         {
@@ -131,6 +137,12 @@ public class EnemyController : BasicSingleton<EnemyController>
 
     public void BeginAttack()
     {
+        if (!EnsureLivingAttackTarget())
+        {
+            battleSystem.EndTurn();
+            return;
+        }
+
         if (battleSystem.ActiveEnemy.CanCrit)
         {
             if (battleSystem.ActiveEnemy.Reference.superCritical)
@@ -141,6 +153,13 @@ public class EnemyController : BasicSingleton<EnemyController>
         }
         battleSystem.ActiveEnemy.BeginAttack(battleSystem.ActivePlayer);
         ui.StartDefending();
+    }
+
+    bool EnsureLivingAttackTarget()
+    {
+        var target = battleSystem.EnemyAttackTarget;
+        if (!target || target.IsDead) ChooseAttackTarget();
+        return battleSystem.EnemyAttackTarget && !battleSystem.EnemyAttackTarget.IsDead;
     }
 
     public void ActivateEnemySkill(EnemyCharacter enemy, GameSkill skill)

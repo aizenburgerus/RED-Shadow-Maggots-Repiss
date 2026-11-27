@@ -840,6 +840,9 @@ public abstract class BaseCharacter : MonoBehaviour
     
     public void RemoveEffect(AppliedEffect effect, int stacks = 0)
     {
+        if (effect == null || !EffectDictionary.TryGetValue(effect.referenceEffect, out var instances) ||
+            !instances.Contains(effect)) return;
+
         if (effect.HasStacks)
         {
             var e = EffectDictionary[effect.referenceEffect][0];
@@ -857,8 +860,8 @@ public abstract class BaseCharacter : MonoBehaviour
         Remove:
 
         Effects.Remove(effect);
-        EffectDictionary[effect.referenceEffect].Remove(effect);
-        if (EffectDictionary[effect.referenceEffect].Count == 0)
+        instances.Remove(effect);
+        if (instances.Count == 0)
         {
             EffectDictionary.Remove(effect.referenceEffect);
         }
@@ -945,6 +948,13 @@ public abstract class BaseCharacter : MonoBehaviour
         OnShielded?.Invoke();
     }
 
+    public void RemoveShield(AppliedEffect effect)
+    {
+        var previousShield = CurrentShield;
+        shieldMods.RemoveAll(modifier => modifier.ParentEffect == effect);
+        if (previousShield > 0 && CurrentShield <= 0) OnShieldBroken?.Invoke();
+    }
+
     public void ApplyAttackModifier(float modifier)
     {
         attackModifier += modifier;
@@ -1005,6 +1015,8 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public virtual void TakeDamage(DamageStruct damage)
     {
+        if (IsDead) return;
+
         var myClass = characterReference.characterClass;
         CharacterClass attackerClass = CharacterClass.Offense;
         if (damage.Source != null)
@@ -1033,34 +1045,31 @@ public abstract class BaseCharacter : MonoBehaviour
 
         float shieldedDamage = 0;
 
-        if (CurrentShield > 0)
+        var previousShield = CurrentShield;
+        if (previousShield > 0)
         {
             float remainder = trueDamage;
             while (shieldMods.Count > 0 && remainder > 0)
             {
                 var s = shieldMods.GetLast();
-                if (s.Value >= remainder)
+                float absorbed = Mathf.Min(s.Value, remainder);
+                s.Deduct(absorbed);
+                remainder -= absorbed;
+                shieldedDamage += absorbed;
+                if (s.Value <= 0)
                 {
-                    s.Deduct(trueDamage);
-                    remainder = 0;
-                    shieldedDamage = trueDamage;
-                }
-                else
-                {
-                    shieldedDamage += s.Value;
-                    remainder -= s.Value;
                     shieldMods.Remove(s);
-                    if (s.ParentEffect != null)
+                    // Shields granted by passive skills must not remove the skill.
+                    if (s.ParentEffect != null && s.ParentEffect.referenceEffect is BaseShieldEffect &&
+                        s.ParentEffect.Target == this &&
+                        !shieldMods.Any(modifier => modifier.ParentEffect == s.ParentEffect))
                     {
                         s.ParentEffect.Remove();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Shield parent effect shouldn't be null");
                     }
                 }
             }
             trueDamage = remainder;
+            if (CurrentShield <= 0) OnShieldBroken?.Invoke();
         }
 
         health = Mathf.Max(0, health - trueDamage);
