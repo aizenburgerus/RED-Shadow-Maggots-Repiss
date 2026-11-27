@@ -239,18 +239,14 @@ public class CharacterUI : BaseGameUI
 
     private void UpdateEffectStacks(AppliedEffect effect)
     {
-        iconDictionary[effect].UpdateStackCount();
+        if (iconDictionary.TryGetValue(effect, out var icon)) icon.UpdateStackCount();
     }
 
     private void RemoveEffect(AppliedEffect obj)
     {
         var index = effects.IndexOf(obj);
         Debug.Log(nameof(CharacterUI) + " Removing effect: " + obj.referenceEffect.effectName, gameObject);
-        if (index == -1)
-        {
-            Debug.Log("HUH??");
-            Debug.Break();
-        }
+        if (index == -1) return; // One-shot effects have no icon to remove.
         effects.Remove(obj);
         iconDictionary.Remove(obj);
         UpdateEffectIcons(index);
