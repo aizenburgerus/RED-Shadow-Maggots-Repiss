@@ -55,7 +55,7 @@ MonoBehaviour:
       type: {class: BaseApplicationStyle, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 3629733565930668128
-      type: {class: TargetSelf, ns: , asm: Assembly-CSharp}
+      type: {class: TargetTarget, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 3629733565930668129
       type: {class: TargetSelf, ns: , asm: Assembly-CSharp}
@@ -68,9 +68,9 @@ MonoBehaviour:
         Hits:
         - 1
     - rid: 3629733565930668145
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 6
+        Flat: 6
         ValueType: 0
     - rid: 3629733565930668146
       type: {class: EffectProperties, ns: , asm: Assembly-CSharp}
@@ -83,7 +83,7 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733565930668150
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.3
+        Flat: 0.3
         ValueType: 0

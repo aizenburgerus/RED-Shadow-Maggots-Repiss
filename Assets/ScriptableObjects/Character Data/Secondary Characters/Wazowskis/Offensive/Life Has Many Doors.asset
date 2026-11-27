@@ -81,7 +81,7 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733565930668138
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.3
+        Flat: 0.3
         ValueType: 0
