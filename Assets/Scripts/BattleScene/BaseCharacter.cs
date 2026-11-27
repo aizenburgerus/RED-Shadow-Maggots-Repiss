@@ -173,7 +173,7 @@ public abstract class BaseCharacter : MonoBehaviour
     public List<GameSkill> Skills => gameSkills;
     protected GameSkill superCritSkill;
     public GameSkill SuperCritSkill => superCritSkill;
-    public virtual bool CanUseSuperCrit => superCritSkill.CooldownTimer <= 0;
+    public virtual bool CanUseSuperCrit => superCritSkill != null && superCritSkill.CooldownTimer <= 0;
 
     public bool CanUseSkill(int index)
     {
@@ -898,7 +898,7 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public void CooldownSuperCrit()
     {
-        superCritSkill.Cooldown();
+        superCritSkill?.Cooldown();
     }
 
     public IEnumerator TickEffects(float delay)
