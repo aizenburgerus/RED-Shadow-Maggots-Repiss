@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +15,11 @@ public class SkillButtonUI : MonoBehaviour
     public void UpdateStatus(GameSkill skill)
     {
         currentSkill = skill;
+        // Some characters do not have a supercritical ability.
+        bool hasSkill = skill != null && skill.ReferenceSkill != null;
+        gameObject.SetActive(hasSkill);
+        if (!hasSkill) return;
+
         skillIcon.sprite = skill.ReferenceSkill.sprite;
 
         var coolDown = skill.EffectiveCooldown?.Invoke();
