@@ -90,14 +90,14 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733565930668166
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.25
+        Flat: 0.25
         ValueType: 0
     - rid: 3629733565930668169
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.2
+        Flat: 0.2
         ValueType: 0
     - rid: 3629733565930668171
       type: {class: EffectProperties, ns: , asm: Assembly-CSharp}
@@ -110,9 +110,9 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733565930668172
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.2
+        Flat: 0.2
         ValueType: 0
     - rid: 3629733565930668173
       type: {class: TargetTarget, ns: , asm: Assembly-CSharp}
