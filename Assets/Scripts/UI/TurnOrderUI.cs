@@ -128,8 +128,10 @@ public class TurnOrderUI : BaseGameUI
 
     void OnWaitListEntityRemoved(WaitListEntity entity)
     {
-        waiteeToGraphic[entity].gameObject.SetActive(false);
-        graphics.Remove(waiteeToGraphic[entity]);
+        if (!waiteeToGraphic.TryGetValue(entity, out var graphic)) return;
+        graphic.transform.DOKill();
+        graphic.gameObject.SetActive(false);
+        graphics.Remove(graphic);
         waiteeToGraphic.Remove(entity);
     }
 
