@@ -9,15 +9,17 @@ public class BattleObject : ScriptableObject
     public List<WaveObject> waves;
 
     // Build a runtime encounter without changing the shared battle/wave assets.
-    public BattleObject CreateEncounter(bool isBossBattle)
+    public BattleObject CreateEncounter(bool isBossBattle, IEnumerable<BattleObject> enemyPool = null)
     {
         var encounter = Instantiate(this);
         encounter.waves = new List<WaveObject>();
         foreach (var template in waves)
         {
             var wave = Instantiate(template);
-            var candidates = template.Enemies
+            var candidates = (isBossBattle || enemyPool == null ? template.Enemies :
+                enemyPool.SelectMany(battle => battle.waves).SelectMany(poolWave => poolWave.Enemies))
                 .Where(enemy => enemy != null && !string.IsNullOrEmpty(enemy.AssetGUID))
+                .GroupBy(enemy => enemy.AssetGUID).Select(group => group.First())
                 .ToArray();
             if (candidates.Length == 0)
             {
@@ -27,11 +29,15 @@ public class BattleObject : ScriptableObject
                 throw new System.InvalidOperationException($"Wave '{template.name}' has no enemies.");
             }
 
-            int count = isBossBattle ? 1 : Random.Range(1, 5);
+            int count = isBossBattle ? 1 : Random.Range(1, Mathf.Min(4, candidates.Length) + 1);
             wave.Enemies = new UnityEngine.AddressableAssets.AssetReference[count];
             for (int i = 0; i < count; i++)
             {
-                wave.Enemies[i] = candidates[isBossBattle ? 0 : Random.Range(0, candidates.Length)];
+                int selected = isBossBattle ? 0 : Random.Range(i, candidates.Length);
+                var enemy = candidates[selected];
+                candidates[selected] = candidates[i];
+                candidates[i] = enemy;
+                wave.Enemies[i] = enemy;
             }
             encounter.waves.Add(wave);
         }

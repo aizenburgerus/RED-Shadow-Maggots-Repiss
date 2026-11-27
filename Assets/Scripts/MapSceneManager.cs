@@ -71,11 +71,11 @@ public class MapSceneManager : BasicSingleton<MapSceneManager>
         {
             case NodeType.MinorEnemy:
                 //Random.InitState(PlayerData.NodesTravelled);
-                PrepareEncounter(battleList[Random.Range(0, battleList.Length)], false);
+                PrepareEncounter(battleList[Random.Range(0, battleList.Length)], false, battleList);
                 partySetup.Initialize();
                 break;
             case NodeType.EliteEnemy:
-                PrepareEncounter(eliteList[Random.Range(0, eliteList.Length)], false);
+                PrepareEncounter(eliteList[Random.Range(0, eliteList.Length)], false, eliteList);
                 partySetup.Initialize();
                 break;
             case NodeType.Boss:
@@ -99,10 +99,10 @@ public class MapSceneManager : BasicSingleton<MapSceneManager>
 
     }
 
-    void PrepareEncounter(BattleObject template, bool isBossBattle)
+    void PrepareEncounter(BattleObject template, bool isBossBattle, BattleObject[] enemyPool = null)
     {
         ReleaseEncounter();
-        nextBattleNode = template.CreateEncounter(isBossBattle);
+        nextBattleNode = template.CreateEncounter(isBossBattle, enemyPool);
     }
 
     void ReleaseEncounter()
