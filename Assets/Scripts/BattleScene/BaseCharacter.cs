@@ -288,16 +288,17 @@ public abstract class BaseCharacter : MonoBehaviour
         wait = characterReference.wait;
         waitLimit = characterReference.waitLimit;
 
-        Initialize();
-
         waitEntity = new WaitListEntity(() => Wait, () => WaitLimitModified)
         {
             Headshot = Reference.headshotSprite,
             Character = this
         };
 
+        Initialize();
+
         for (int i = 0; i < characterReference.skills.Length; i++)
         {
+            if (!characterReference.skills[i]) continue;
             GameSkill newSkill = new GameSkill(this, characterReference.skills[i]);
             gameSkills.Add(newSkill);
         }
@@ -373,6 +374,10 @@ public abstract class BaseCharacter : MonoBehaviour
         characterMesh = Instantiate(obj.Result, transform);
         rigAnim = characterMesh.GetComponentInChildren<Animator>();
         animHelper = GetComponentInChildren<AnimationHelper>();
+        // Animation events are delivered on the Animator's GameObject, not its parent.
+        if (rigAnim && Reference.superCritical && !rigAnim.GetComponent<SuperCrits.BaseSuperCrit>() &&
+            !rigAnim.GetComponent<SuperCriticalEffect>())
+            rigAnim.gameObject.AddComponent<SuperCrits.BaseSuperCrit>();
 
         OnStartTurn += waitEntity.OnStartTurn;
         OnEndTurn += waitEntity.OnEndTurn;
@@ -444,6 +449,9 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public virtual void UseSuperCritical()
     {
+        finishingAttack = false;
+        animHelper.ResetAttackCounters();
+        sceneTweener.RememberPosition(this);
         if (rigAnim)
         {
             rigAnim.Play("Super Critical");
@@ -460,6 +468,7 @@ public abstract class BaseCharacter : MonoBehaviour
         IncomingDamage = default;
         IncomingDamage.Source = this;
         IncomingDamage.QTEPlayer = 1;
+        IncomingDamage.QTEEnemy = 1;
         IncomingDamage.QTEValue = 1;
         IncomingDamage.IsCritical = true;
         IncomingDamage.IsSuperCritical = true;
@@ -498,6 +507,9 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public virtual void BeginAttack(BaseCharacter target)
     {
+        finishingAttack = false;
+        animHelper.ResetAttackCounters();
+        sceneTweener.RememberPosition(this);
         IncomingDamage = default;
         IncomingDamage.Percentage = 1;
         IncomingDamage.Source = this;
@@ -517,15 +529,18 @@ public abstract class BaseCharacter : MonoBehaviour
         OnBeginAttack?.Invoke(target);
     }
 
+    bool finishingAttack;
     public void FinishAttack()
     {
+        if (finishingAttack) return;
+        finishingAttack = true;
         switch (IncomingAttack.attackRange)
         {
             case AttackRange.CloseRange:
-                sceneTweener.ReturnToPosition();
+                sceneTweener.ReturnToPosition(this);
                 break;
             case AttackRange.LongRange:
-                sceneTweener.RotateBack();
+                sceneTweener.RotateBack(this);
                 break;
         }
 
@@ -539,16 +554,19 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public void FinishSuperCritAttack()
     {
+        if (finishingAttack) return;
+        finishingAttack = true;
         switch (Reference.tweenBackStyle)
         {
             case TweenBackType.None:
-                sceneTweener.RotateBack();
+                sceneTweener.RotateBack(this);
                 break;
             case TweenBackType.Teleport:
-                sceneTweener.TeleportBackToPosition();
+                sceneTweener.TeleportBackToPosition(transform);
+                sceneTweener.RotateBack(this);
                 break;
             case TweenBackType.Jump:
-                sceneTweener.ReturnToPosition();
+                sceneTweener.ReturnToPosition(this);
                 break;
         }
 
@@ -1069,7 +1087,7 @@ public abstract class BaseCharacter : MonoBehaviour
             blocked = false;
         }
 
-        if (rigAnim)
+        if (rigAnim && !(IncomingAttack.Targets.Caster == this && !finishingAttack))
         {
             if (blocked)
             {

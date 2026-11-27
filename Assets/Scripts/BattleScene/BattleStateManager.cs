@@ -16,6 +16,7 @@ public class BattleState
 
         private static readonly Dictionary<string, Func<SerializedValue, BaseEffectValue>> deserializeDict = new()
         {
+            [nameof(StatScaledValue)] = StatScaledValue.Deserialize,
             [nameof(FlatValue)] = sv => new FlatValue
             {
                 Flat = float.Parse(sv.Values[0]),

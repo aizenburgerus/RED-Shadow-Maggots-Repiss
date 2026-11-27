@@ -410,8 +410,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
 
     public void RemoveEntityFromWaitlist(WaitListEntity e)
     {
-        waitList.Remove(e);
-        OnWaitListEntityRemoved?.Invoke(e);
+        if (waitList.Remove(e)) OnWaitListEntityRemoved?.Invoke(e);
     }
 
     public IEnumerator InitiateNextBattle()
