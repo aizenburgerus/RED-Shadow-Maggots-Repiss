@@ -68,6 +68,7 @@ public class EnemyController : BasicSingleton<EnemyController>
     public void AssignEnemies(EnemyCharacter[] enemyCharacters)
     {
         Enemies = enemyCharacters;
+        enemyList.Clear();
     }
 
     public void CalculateSkillUsage()
@@ -98,6 +99,12 @@ public class EnemyController : BasicSingleton<EnemyController>
 
     public void MakeYourMove()
     {
+        if (!EnsureLivingAttackTarget())
+        {
+            battleSystem.EndTurn();
+            return;
+        }
+
 #if UNITY_EDITOR
         if (disableSkillUsage)
         {
@@ -107,7 +114,6 @@ public class EnemyController : BasicSingleton<EnemyController>
 #endif
         battleStateManager.InitializeRandom();
 
-#if UNITY_EDITOR
         // Enemies should not have 0 skills for real, at least I think they shouldn't...
         if (battleSystem.ActiveEnemy.Skills.Count == 0)
         {
@@ -117,7 +123,6 @@ public class EnemyController : BasicSingleton<EnemyController>
                 " tried to use a skill, but no skills found!");
             return;
         }
-#endif
         if (!battleSystem.ActiveEnemy.CanCrit && useSkill[battleSystem.ActiveEnemy] && !battleSystem.ActiveEnemy.UsedSkillThisTurn)
         {
             GameSkill randomSkill =
@@ -132,15 +137,29 @@ public class EnemyController : BasicSingleton<EnemyController>
 
     public void BeginAttack()
     {
+        if (!EnsureLivingAttackTarget())
+        {
+            battleSystem.EndTurn();
+            return;
+        }
+
         if (battleSystem.ActiveEnemy.CanCrit)
         {
-            if (battleSystem.ActiveEnemy.Reference.superCritical.effects[0].attackProps != null)
+            if (battleSystem.ActiveEnemy.Reference.superCritical)
             {
                 battleSystem.ActiveEnemy.UseSuperCritical();
+                return;
             }
         }
         battleSystem.ActiveEnemy.BeginAttack(battleSystem.ActivePlayer);
         ui.StartDefending();
+    }
+
+    bool EnsureLivingAttackTarget()
+    {
+        var target = battleSystem.EnemyAttackTarget;
+        if (!target || target.IsDead) ChooseAttackTarget();
+        return battleSystem.EnemyAttackTarget && !battleSystem.EnemyAttackTarget.IsDead;
     }
 
     public void ActivateEnemySkill(EnemyCharacter enemy, GameSkill skill)

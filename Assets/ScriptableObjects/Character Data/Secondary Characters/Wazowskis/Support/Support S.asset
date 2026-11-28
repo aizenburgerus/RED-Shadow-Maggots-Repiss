@@ -74,9 +74,11 @@ MonoBehaviour:
     - rid: 3629733565930668180
       type: {class: StatScaledValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 6
+        Value:
+          rid: 3629733565930668189
         ValueType: 0
-        Stat: {fileID: 11400000, guid: fe45de3acb5849f499215f92adf9f519, type: 2}
+        Stat:
+          rid: 3629733565930668187
         StatSource:
           rid: 3629733565930668181
     - rid: 3629733565930668181
@@ -91,11 +93,31 @@ MonoBehaviour:
     - rid: 3629733565930668185
       type: {class: StatScaledValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.6
+        Value:
+          rid: 3629733565930668190
         ValueType: 0
-        Stat: {fileID: 11400000, guid: 27bd3f15cfe40124b9dd647702922259, type: 2}
+        Stat:
+          rid: 3629733565930668188
         StatSource:
           rid: 3629733565930668186
     - rid: 3629733565930668186
       type: {class: TargetSelf, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+    - rid: 3629733565930668187
+      type: {class: AttackStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+    - rid: 3629733565930668188
+      type: {class: MaxHealthStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+    - rid: 3629733565930668189
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+        Flat: 6
+    - rid: 3629733565930668190
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+        Flat: 0.6

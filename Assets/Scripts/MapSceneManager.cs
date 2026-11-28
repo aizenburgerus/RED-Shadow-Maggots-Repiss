@@ -71,15 +71,15 @@ public class MapSceneManager : BasicSingleton<MapSceneManager>
         {
             case NodeType.MinorEnemy:
                 //Random.InitState(PlayerData.NodesTravelled);
-                nextBattleNode = battleList[Random.Range(0, battleList.Length)];
+                PrepareEncounter(battleList[Random.Range(0, battleList.Length)], false, battleList);
                 partySetup.Initialize();
                 break;
             case NodeType.EliteEnemy:
-                nextBattleNode = eliteList[Random.Range(0, eliteList.Length)];
+                PrepareEncounter(eliteList[Random.Range(0, eliteList.Length)], false, eliteList);
                 partySetup.Initialize();
                 break;
             case NodeType.Boss:
-                nextBattleNode = bossBattle;
+                PrepareEncounter(bossBattle, true);
                 partySetup.Initialize();
                 break;
             case NodeType.RestSite:
@@ -97,6 +97,25 @@ public class MapSceneManager : BasicSingleton<MapSceneManager>
     public void UpdateCardStack()
     {
 
+    }
+
+    void PrepareEncounter(BattleObject template, bool isBossBattle, BattleObject[] enemyPool = null)
+    {
+        ReleaseEncounter();
+        nextBattleNode = template.CreateEncounter(isBossBattle, enemyPool);
+    }
+
+    void ReleaseEncounter()
+    {
+        if (!nextBattleNode) return;
+        foreach (var wave in nextBattleNode.waves) Destroy(wave);
+        Destroy(nextBattleNode);
+        nextBattleNode = null;
+    }
+
+    private void OnDestroy()
+    {
+        ReleaseEncounter();
     }
 
     public void MoveToBattleScene()

@@ -81,12 +81,12 @@ MonoBehaviour:
       type: {class: TargetTarget, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 3629733565930668162
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: -0.2
+        Flat: -0.2
         ValueType: 0
     - rid: 3629733565930668163
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.025
+        Flat: 0.025
         ValueType: 0

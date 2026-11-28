@@ -151,9 +151,24 @@ public class SceneTweener : BasicSingleton<SceneTweener>
 
     float lerpValue;
 
-    Vector3 savedPosition;
+    readonly Dictionary<Transform, Vector3> savedPositions = new Dictionary<Transform, Vector3>();
+    readonly Dictionary<BaseCharacter, Quaternion> savedRotations = new Dictionary<BaseCharacter, Quaternion>();
+
+    public void RememberPosition(BaseCharacter character)
+    {
+        if (!savedPositions.ContainsKey(character.transform))
+            savedPositions.Add(character.transform, character.transform.position);
+        if (character.CharacterMesh && !savedRotations.ContainsKey(character))
+            savedRotations.Add(character, character.CharacterMesh.transform.rotation);
+    }
+
+    void RememberPosition(Transform character)
+    {
+        if (!savedPositions.ContainsKey(character)) savedPositions.Add(character, character.position);
+    }
     public void MeleeTweenTo(Transform attacker, Transform target)
     {
+        RememberPosition(attacker);
         switch (BattleSystem.Instance.CurrentPhase)
         {
             case BattlePhases.PlayerTurn:
@@ -171,14 +186,13 @@ public class SceneTweener : BasicSingleton<SceneTweener>
                 enemyPath.transform.DOMove(target.position - characterDestinationOffset, characterTweenTime).SetEase(Ease.OutCubic).SetUpdate(UpdateType.Late);
                 break;
         }
-        savedPosition = attacker.position;
 
         var newTween = DOTween.To(() => lerpValue, x => lerpValue = x, 2, camTweenTime).SetEase(Ease.OutCubic);
     }
 
     public void MeleeMoveTo(Transform attacker, Transform target)
     {
-        savedPosition = attacker.position;
+        RememberPosition(attacker);
         switch (BattleSystem.Instance.CurrentPhase)
         {
             case BattlePhases.PlayerTurn:
@@ -257,7 +271,7 @@ public class SceneTweener : BasicSingleton<SceneTweener>
         {
             case AttackRange.CloseRange:
                 //cam.m_LookAt = obj.transform;
-                savedPosition = obj.transform.position;
+                RememberPosition(obj);
                 Vector3 position = target.position + offset;
                 obj.transform.position = position;
                 //path.transform.position = position;
@@ -276,8 +290,13 @@ public class SceneTweener : BasicSingleton<SceneTweener>
 
     public void ReturnToPosition()
     {
-        StartCoroutine(ReturnToPositionDelayed());
+        ReturnToPosition(CurrentAttacker());
     }
+
+    BaseCharacter CurrentAttacker() => battleSystem.CurrentPhase == BattlePhases.PlayerTurn
+        ? (BaseCharacter)battleSystem.ActivePlayer : battleSystem.ActiveEnemy;
+
+    public void ReturnToPosition(BaseCharacter attacker) => StartCoroutine(CompleteAttack(attacker, true));
 
     private void OnExecuteQuickTime()
     {
@@ -294,150 +313,73 @@ public class SceneTweener : BasicSingleton<SceneTweener>
         battleSystem.ActivePlayer.CharacterMesh.transform.eulerAngles = new Vector3(0, -90, 0);
     }
 
-    public void RotateBack()
-    {
-        StartCoroutine(RotateBackDelayed());
-    }
+    public void RotateBack() => RotateBack(CurrentAttacker());
 
-    IEnumerator RotateBackDelayed()
+    public void RotateBack(BaseCharacter attacker) => StartCoroutine(CompleteAttack(attacker, false));
+
+    IEnumerator CompleteAttack(BaseCharacter attacker, bool moveBack)
     {
-        //switch (battleSystem.CurrentPhase)
-        //{
-        //    case BattlePhases.PlayerTurn:
-        //        playerCam.m_LookAt = battleSystem.ActivePlayer.transform;
-        //        break;
-        //    case BattlePhases.EnemyTurn:
-        //        enemyCam.m_LookAt = battleSystem.ActivePlayer.transform;
-        //        break;
-        //}
+        var phase = battleSystem.CurrentPhase;
+        var target = battleSystem.OpposingCharacter;
+        var camera = phase == BattlePhases.PlayerTurn ? playerCam : enemyCam;
+        camera.enabled = true;
+        if (attacker) camera.m_LookAt = attacker.transform;
 
         yield return new WaitForSeconds(returnTweenDelay);
 
-        switch (battleSystem.CurrentPhase)
+        if (attacker)
         {
-            case BattlePhases.PlayerTurn:
-                var activePlayer = battleSystem.ActivePlayer;
+            var root = attacker.transform;
+            if (savedPositions.TryGetValue(root, out var position) &&
+                (moveBack || (root.position - position).sqrMagnitude > 0.0001f))
+            {
+                root.DOKill();
+                attacker.PlayReturnAnimation();
+                var tween = root.DOMove(position, characterTweenTime)
+                    .SetDelay(characterTweenBackDelay).SetEase(Ease.OutCubic);
+                yield return tween.WaitForCompletion();
+                // A killed/replaced tween must not leave the actor between its slots.
+                if (attacker) root.position = position;
+            }
 
-                battleSystem.ActiveEnemy.CharacterMesh.transform.DORotate(new Vector3(0, 90, 0), 0.15f);
-                activePlayer.CharacterMesh.transform.DORotate(new Vector3(0, -90, 0), 0.1f);
-
-                activePlayer.ReturnToIdle();
-                break;
-            case BattlePhases.EnemyTurn:
-                var activeEnemy = battleSystem.ActiveEnemy;
-
-                battleSystem.ActivePlayer.CharacterMesh.transform.DORotate(new Vector3(0, -90, 0), 0.15f);
-                activeEnemy.CharacterMesh.transform.DORotate(new Vector3(0, 90, 0), 0.1f);
-
-                activeEnemy.ReturnToIdle();
-                break;
+            if (attacker && attacker.CharacterMesh)
+            {
+                attacker.CharacterMesh.transform.DOKill();
+                if (savedRotations.TryGetValue(attacker, out var rotation))
+                    attacker.CharacterMesh.transform.rotation = rotation;
+                attacker.ReturnToIdle();
+            }
         }
 
+        if (target && target.CharacterMesh)
+            target.CharacterMesh.transform.eulerAngles = target.IsPlayer()
+                ? new Vector3(0, -90, 0) : new Vector3(0, 90, 0);
+
+        lerpValue = 0;
         playerCam.m_LookAt = worldCenter;
+        enemyCam.m_LookAt = worldCenter;
+        enemyCam.enabled = false;
+        playerCam.enabled = true;
 
         yield return new WaitForSeconds(postCharacterTweenWaitTime);
 
-        battleSystem.EndTurn();
-    }
-
-    IEnumerator ReturnToPositionDelayed()
-    {
-        switch (BattleSystem.Instance.CurrentPhase)
-        {
-            case BattlePhases.PlayerTurn:
-                playerCam.enabled = true;
-                playerCam.m_LookAt = battleSystem.ActivePlayer.transform;
-                break;
-            case BattlePhases.EnemyTurn:
-                enemyCam.enabled = true;
-                enemyCam.m_LookAt = battleSystem.ActiveEnemy.transform;
-                break;
-        }
-
-        yield return new WaitForSeconds(returnTweenDelay);
-
-        bool maintainGaze = true;
-        Vector3 ogPos = Vector3.zero;
-        Vector3 ogRot = Vector3.zero;
-        switch (battleSystem.CurrentPhase)
-        {
-            case BattlePhases.PlayerTurn:
-                var activePlayer = battleSystem.ActivePlayer;
-
-                ogPos = activePlayer.CharacterMesh.transform.position;
-                ogRot = activePlayer.CharacterMesh.transform.eulerAngles;
-                activePlayer.PlayReturnAnimation();
-
-                DOTween.To(() => lerpValue, x => lerpValue = x, 0, camTweenTime).SetEase(Ease.OutCubic);
-                //playerPath.transform.DOKill();
-                //playerPath.transform.DOMove(Vector3.zero, camTweenTime).SetEase(Ease.OutCubic).SetUpdate(UpdateType.Late);
-
-                activePlayer.transform.DOMove(savedPosition, characterTweenTime).SetDelay(characterTweenBackDelay).SetEase(Ease.Linear).onComplete += () =>
-                {
-                    activePlayer.CharacterMesh.transform.DORotate(ogRot, 0.15f, RotateMode.Fast);
-                    playerCam.m_LookAt = worldCenter;
-                    maintainGaze = false;
-                };
-
-                while (maintainGaze)
-                {
-                    Vector3 targetDirection = ogPos - activePlayer.CharacterMesh.transform.position;
-                    targetDirection.Normalize();
-
-                    activePlayer.CharacterMesh.transform.forward = 
-                        Vector3.RotateTowards(activePlayer.CharacterMesh.transform.forward, targetDirection, 2 * Time.deltaTime, 0);
-
-                    yield return null;
-                }
-                break;
-            case BattlePhases.EnemyTurn:
-                var activeEnemy = battleSystem.ActiveEnemy;
-
-                ogPos = activeEnemy.CharacterMesh.transform.position;
-                ogRot = activeEnemy.CharacterMesh.transform.eulerAngles;
-                activeEnemy.PlayReturnAnimation();
-
-                DOTween.To(() => lerpValue, x => lerpValue = x, 0, camTweenTime).SetEase(Ease.OutCubic);
-                enemyPath.transform.DOKill();
-                enemyPath.transform.DOMove(Vector3.zero, camTweenTime).SetEase(Ease.OutCubic).SetUpdate(UpdateType.Late);
-
-                activeEnemy.transform.DOMove(savedPosition, characterTweenTime).SetDelay(characterTweenBackDelay).SetEase(Ease.OutCubic).onComplete += () => {
-                    activeEnemy.CharacterMesh.transform.DORotate(ogRot, 0.15f, RotateMode.Fast);
-                    enemyCam.m_LookAt = worldCenter;
-                    enemyCam.enabled = false;
-                    maintainGaze = false;
-                };
-
-                while (maintainGaze)
-                {
-                    Vector3 targetDirection = ogPos - activeEnemy.CharacterMesh.transform.position;
-                    targetDirection.Normalize();
-
-                    activeEnemy.CharacterMesh.transform.forward =
-                        Vector3.RotateTowards(activeEnemy.CharacterMesh.transform.forward, targetDirection, 2 * Time.deltaTime, 0);
-
-                    yield return null;
-                }
-                break;
-        }
-
-        yield return new WaitForSeconds(postCharacterTweenWaitTime);
-
-        battleSystem.EndTurn();
+        // Resolve the actor that started the return, not whichever target is selected later.
+        if (battleSystem.CurrentPhase == phase && CurrentAttacker() == attacker)
+            battleSystem.EndTurn();
     }
 
     public void TeleportBackToPosition()
     {
-        switch (battleSystem.CurrentPhase)
+        var attacker = CurrentAttacker();
+        if (attacker) TeleportBackToPosition(attacker.transform);
+    }
+
+    public void TeleportBackToPosition(Transform attacker)
+    {
+        if (attacker && savedPositions.TryGetValue(attacker, out var position))
         {
-            case BattlePhases.PlayerTurn:
-                var activePlayer = battleSystem.ActivePlayer;
-                activePlayer.transform.position = savedPosition;
-                break;
-            case BattlePhases.EnemyTurn:
-                var activeEnemy = battleSystem.ActiveEnemy;
-                activeEnemy.transform.position = savedPosition;
-                break;
+            attacker.DOKill();
+            attacker.position = position;
         }
     }
 

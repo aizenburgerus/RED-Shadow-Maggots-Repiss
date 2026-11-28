@@ -66,9 +66,11 @@ public class BattleSystem : BasicSingleton<BattleSystem>
     {
         get
         {
-            if (priorityPlayers.Count > 0) return priorityPlayers[0];
+            var priority = priorityPlayers.FirstOrDefault(player => player && !player.IsDead);
+            if (priority) return priority;
 
             List<PlayerCharacter> p = LivingPlayers;
+            if (p.Count == 0) return null;
 
             battleStateManager.InitializeRandom();
             return p[Random.Range(0, p.Count)];
@@ -410,8 +412,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
 
     public void RemoveEntityFromWaitlist(WaitListEntity e)
     {
-        waitList.Remove(e);
-        OnWaitListEntityRemoved?.Invoke(e);
+        if (waitList.Remove(e)) OnWaitListEntityRemoved?.Invoke(e);
     }
 
     public IEnumerator InitiateNextBattle()
@@ -461,7 +462,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
     public void OnAnyPlayerDeath()
     {
         SwitchTargets();
-        if (PlayersAlive) enemyController.ChooseAttackTarget();
+        enemyController.ChooseAttackTarget();
     }
 
     /// <summary>
@@ -469,7 +470,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
     /// </summary>
     public void SwitchTargets()
     {
-        if (playerTargets.enemy.IsDead)
+        if (playerTargets.enemy && playerTargets.enemy.IsDead)
         {
             var newTarget = enemyController.RandomEnemy;
             if (newTarget)
@@ -478,7 +479,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
                 playerTargets.enemy.ShowCharacterUI();
             }
         }
-        else if (playerTargets.player.IsDead)
+        if (playerTargets.player && playerTargets.player.IsDead)
         {
             if (PlayersAlive)
             {
@@ -496,6 +497,8 @@ public class BattleSystem : BasicSingleton<BattleSystem>
 
     public void PerformAttack(BaseCharacter attacker, BaseCharacter defender)
     {
+        if (!attacker || attacker.IsDead || !defender || defender.IsDead) return;
+
         if (attacker.Reference.attackEffectPrefab)
         {
             defender.SpawnEffectPrefab(attacker.Reference.attackEffectPrefab);
@@ -821,7 +824,7 @@ public class BattleSystem : BasicSingleton<BattleSystem>
                 break;
             case BattlePhases.EnemyTurn:
                 OnStartPhase[BattlePhases.EnemyTurn.ToInt()]?.Invoke();
-                if (!OpposingCharacter) enemyController.ChooseAttackTarget();
+                if (!OpposingCharacter || OpposingCharacter.IsDead) enemyController.ChooseAttackTarget();
                 enemyController.MakeYourMove();
                 OnStartPhaseLate[BattlePhases.EnemyTurn.ToInt()]?.Invoke();
                 break;
@@ -870,7 +873,9 @@ public class BattleSystem : BasicSingleton<BattleSystem>
 
     public void RegisterPlayerDeath(PlayerCharacter player)
     {
-        deadMaggots.Add(player);
+        if (!player) return;
+        if (!deadMaggots.Contains(player)) deadMaggots.Add(player);
+        RemoveEntityFromWaitlist(player.WaitEntity);
         player.transform.parent = null;
     }
 

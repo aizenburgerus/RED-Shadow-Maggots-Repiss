@@ -173,7 +173,7 @@ public abstract class BaseCharacter : MonoBehaviour
     public List<GameSkill> Skills => gameSkills;
     protected GameSkill superCritSkill;
     public GameSkill SuperCritSkill => superCritSkill;
-    public virtual bool CanUseSuperCrit => superCritSkill.CooldownTimer <= 0;
+    public virtual bool CanUseSuperCrit => superCritSkill != null && superCritSkill.CooldownTimer <= 0;
 
     public bool CanUseSkill(int index)
     {
@@ -288,16 +288,17 @@ public abstract class BaseCharacter : MonoBehaviour
         wait = characterReference.wait;
         waitLimit = characterReference.waitLimit;
 
-        Initialize();
-
         waitEntity = new WaitListEntity(() => Wait, () => WaitLimitModified)
         {
             Headshot = Reference.headshotSprite,
             Character = this
         };
 
+        Initialize();
+
         for (int i = 0; i < characterReference.skills.Length; i++)
         {
+            if (!characterReference.skills[i]) continue;
             GameSkill newSkill = new GameSkill(this, characterReference.skills[i]);
             gameSkills.Add(newSkill);
         }
@@ -373,6 +374,10 @@ public abstract class BaseCharacter : MonoBehaviour
         characterMesh = Instantiate(obj.Result, transform);
         rigAnim = characterMesh.GetComponentInChildren<Animator>();
         animHelper = GetComponentInChildren<AnimationHelper>();
+        // Animation events are delivered on the Animator's GameObject, not its parent.
+        if (rigAnim && Reference.superCritical && !rigAnim.GetComponent<SuperCrits.BaseSuperCrit>() &&
+            !rigAnim.GetComponent<SuperCriticalEffect>())
+            rigAnim.gameObject.AddComponent<SuperCrits.BaseSuperCrit>();
 
         OnStartTurn += waitEntity.OnStartTurn;
         OnEndTurn += waitEntity.OnEndTurn;
@@ -444,6 +449,9 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public virtual void UseSuperCritical()
     {
+        finishingAttack = false;
+        animHelper.ResetAttackCounters();
+        sceneTweener.RememberPosition(this);
         if (rigAnim)
         {
             rigAnim.Play("Super Critical");
@@ -460,6 +468,7 @@ public abstract class BaseCharacter : MonoBehaviour
         IncomingDamage = default;
         IncomingDamage.Source = this;
         IncomingDamage.QTEPlayer = 1;
+        IncomingDamage.QTEEnemy = 1;
         IncomingDamage.QTEValue = 1;
         IncomingDamage.IsCritical = true;
         IncomingDamage.IsSuperCritical = true;
@@ -498,6 +507,9 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public virtual void BeginAttack(BaseCharacter target)
     {
+        finishingAttack = false;
+        animHelper.ResetAttackCounters();
+        sceneTweener.RememberPosition(this);
         IncomingDamage = default;
         IncomingDamage.Percentage = 1;
         IncomingDamage.Source = this;
@@ -517,15 +529,18 @@ public abstract class BaseCharacter : MonoBehaviour
         OnBeginAttack?.Invoke(target);
     }
 
+    bool finishingAttack;
     public void FinishAttack()
     {
+        if (finishingAttack) return;
+        finishingAttack = true;
         switch (IncomingAttack.attackRange)
         {
             case AttackRange.CloseRange:
-                sceneTweener.ReturnToPosition();
+                sceneTweener.ReturnToPosition(this);
                 break;
             case AttackRange.LongRange:
-                sceneTweener.RotateBack();
+                sceneTweener.RotateBack(this);
                 break;
         }
 
@@ -539,16 +554,19 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public void FinishSuperCritAttack()
     {
+        if (finishingAttack) return;
+        finishingAttack = true;
         switch (Reference.tweenBackStyle)
         {
             case TweenBackType.None:
-                sceneTweener.RotateBack();
+                sceneTweener.RotateBack(this);
                 break;
             case TweenBackType.Teleport:
-                sceneTweener.TeleportBackToPosition();
+                sceneTweener.TeleportBackToPosition(transform);
+                sceneTweener.RotateBack(this);
                 break;
             case TweenBackType.Jump:
-                sceneTweener.ReturnToPosition();
+                sceneTweener.ReturnToPosition(this);
                 break;
         }
 
@@ -822,6 +840,9 @@ public abstract class BaseCharacter : MonoBehaviour
     
     public void RemoveEffect(AppliedEffect effect, int stacks = 0)
     {
+        if (effect == null || !EffectDictionary.TryGetValue(effect.referenceEffect, out var instances) ||
+            !instances.Contains(effect)) return;
+
         if (effect.HasStacks)
         {
             var e = EffectDictionary[effect.referenceEffect][0];
@@ -839,8 +860,8 @@ public abstract class BaseCharacter : MonoBehaviour
         Remove:
 
         Effects.Remove(effect);
-        EffectDictionary[effect.referenceEffect].Remove(effect);
-        if (EffectDictionary[effect.referenceEffect].Count == 0)
+        instances.Remove(effect);
+        if (instances.Count == 0)
         {
             EffectDictionary.Remove(effect.referenceEffect);
         }
@@ -880,7 +901,7 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public void CooldownSuperCrit()
     {
-        superCritSkill.Cooldown();
+        superCritSkill?.Cooldown();
     }
 
     public IEnumerator TickEffects(float delay)
@@ -925,6 +946,13 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         shieldMods.Add(new StatModifier(shieldGain, effect));
         OnShielded?.Invoke();
+    }
+
+    public void RemoveShield(AppliedEffect effect)
+    {
+        var previousShield = CurrentShield;
+        shieldMods.RemoveAll(modifier => modifier.ParentEffect == effect);
+        if (previousShield > 0 && CurrentShield <= 0) OnShieldBroken?.Invoke();
     }
 
     public void ApplyAttackModifier(float modifier)
@@ -987,6 +1015,8 @@ public abstract class BaseCharacter : MonoBehaviour
 
     public virtual void TakeDamage(DamageStruct damage)
     {
+        if (IsDead) return;
+
         var myClass = characterReference.characterClass;
         CharacterClass attackerClass = CharacterClass.Offense;
         if (damage.Source != null)
@@ -1015,34 +1045,31 @@ public abstract class BaseCharacter : MonoBehaviour
 
         float shieldedDamage = 0;
 
-        if (CurrentShield > 0)
+        var previousShield = CurrentShield;
+        if (previousShield > 0)
         {
             float remainder = trueDamage;
             while (shieldMods.Count > 0 && remainder > 0)
             {
                 var s = shieldMods.GetLast();
-                if (s.Value >= remainder)
+                float absorbed = Mathf.Min(s.Value, remainder);
+                s.Deduct(absorbed);
+                remainder -= absorbed;
+                shieldedDamage += absorbed;
+                if (s.Value <= 0)
                 {
-                    s.Deduct(trueDamage);
-                    remainder = 0;
-                    shieldedDamage = trueDamage;
-                }
-                else
-                {
-                    shieldedDamage += s.Value;
-                    remainder -= s.Value;
                     shieldMods.Remove(s);
-                    if (s.ParentEffect != null)
+                    // Shields granted by passive skills must not remove the skill.
+                    if (s.ParentEffect != null && s.ParentEffect.referenceEffect is BaseShieldEffect &&
+                        s.ParentEffect.Target == this &&
+                        !shieldMods.Any(modifier => modifier.ParentEffect == s.ParentEffect))
                     {
                         s.ParentEffect.Remove();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Shield parent effect shouldn't be null");
                     }
                 }
             }
             trueDamage = remainder;
+            if (CurrentShield <= 0) OnShieldBroken?.Invoke();
         }
 
         health = Mathf.Max(0, health - trueDamage);
@@ -1069,7 +1096,7 @@ public abstract class BaseCharacter : MonoBehaviour
             blocked = false;
         }
 
-        if (rigAnim)
+        if (rigAnim && !(IncomingAttack.Targets.Caster == this && !finishingAttack))
         {
             if (blocked)
             {

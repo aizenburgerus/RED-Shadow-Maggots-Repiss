@@ -150,7 +150,7 @@ public class EnemyCharacter : BaseCharacter
 
     public override void BeginAttack(BaseCharacter target)
     {
-        if (!CanCrit)
+        if (!CanCrit || !Reference.superCritical)
         {
             battleStateManager.InitializeRandom();
 

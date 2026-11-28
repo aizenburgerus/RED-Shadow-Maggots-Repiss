@@ -75,9 +75,9 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733565930668118
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.3
+        Flat: 0.3
         ValueType: 0
     - rid: 3629733565930668119
       type: {class: AllAllies, ns: , asm: Assembly-CSharp}
@@ -88,11 +88,22 @@ MonoBehaviour:
     - rid: 3629733565930668121
       type: {class: StatScaledValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.5
+        Value:
+          rid: 3629733565930668124
         ValueType: 0
-        Stat: {fileID: 11400000, guid: 27bd3f15cfe40124b9dd647702922259, type: 2}
+        Stat:
+          rid: 3629733565930668123
         StatSource:
           rid: 3629733565930668122
     - rid: 3629733565930668122
       type: {class: TargetSelf, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+    - rid: 3629733565930668123
+      type: {class: MaxHealthStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+    - rid: 3629733565930668124
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+        Flat: 0.5

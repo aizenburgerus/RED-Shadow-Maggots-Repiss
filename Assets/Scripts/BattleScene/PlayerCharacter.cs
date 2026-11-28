@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -13,7 +13,7 @@ public class PlayerCharacter : BaseCharacter
     int canteensBorrowed;
 
     public override bool CanCrit => CritChanceModified >= 1;
-    public override bool CanUseSuperCrit => superCritSkill.EffectiveCooldown?.Invoke() <= 0;
+    public override bool CanUseSuperCrit => superCritSkill != null && superCritSkill.EffectiveCooldown?.Invoke() <= 0;
 
     public Action OnSetActivePlayer;
     public static Action<PlayerCharacter> OnSelectPlayer;
@@ -26,8 +26,10 @@ public class PlayerCharacter : BaseCharacter
 
         maxHealth = characterReference.GetMaxHealth(currentLevel, false)/* * RarityMultiplier*/;
 
-        superCritSkill = new GameSkill(this, characterReference.superCritical, 
-            () => Mathf.Max(superCritSkill.CooldownTimer - canteensBorrowed, 0));
+        superCritSkill = characterReference.superCritical
+            ? new GameSkill(this, characterReference.superCritical,
+                () => Mathf.Max(superCritSkill.CooldownTimer - canteensBorrowed, 0))
+            : null;
 
         if (stateInfo != null)
         {

@@ -91,9 +91,11 @@ MonoBehaviour:
     - rid: 3629733565930668102
       type: {class: StatScaledValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.05
+        Value:
+          rid: 3629733565930668112
         ValueType: 0
-        Stat: {fileID: 11400000, guid: 27bd3f15cfe40124b9dd647702922259, type: 2}
+        Stat:
+          rid: 3629733565930668110
         StatSource:
           rid: 3629733565930668103
     - rid: 3629733565930668103
@@ -110,9 +112,9 @@ MonoBehaviour:
         stacks: 0
         maxStacks: -1
     - rid: 3629733565930668105
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.3
+        Flat: 0.3
         ValueType: 0
     - rid: 3629733565930668106
       type: {class: EffectProperties, ns: , asm: Assembly-CSharp}
@@ -127,11 +129,31 @@ MonoBehaviour:
     - rid: 3629733565930668108
       type: {class: StatScaledValue, ns: , asm: Assembly-CSharp}
       data:
-        Value: 0.25
+        Value:
+          rid: 3629733565930668113
         ValueType: 0
-        Stat: {fileID: 11400000, guid: 27bd3f15cfe40124b9dd647702922259, type: 2}
+        Stat:
+          rid: 3629733565930668111
         StatSource:
           rid: 3629733565930668109
     - rid: 3629733565930668109
       type: {class: TargetSelf, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+    - rid: 3629733565930668110
+      type: {class: MaxHealthStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+    - rid: 3629733565930668111
+      type: {class: MaxHealthStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+    - rid: 3629733565930668112
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+        Flat: 0.05
+    - rid: 3629733565930668113
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
+        Flat: 0.25

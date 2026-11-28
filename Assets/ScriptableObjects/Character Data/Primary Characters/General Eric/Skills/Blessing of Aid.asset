@@ -130,27 +130,27 @@ MonoBehaviour:
         - rid: 3382399323689189413
         ValueType: 0
     - rid: 3382399323689189410
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        FlatValue: 0
+        Flat: 0
         ValueType: 0
         Operator: 0
     - rid: 3382399323689189411
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        FlatValue: 0
+        Flat: 0
         ValueType: 0
         Operator: 0
     - rid: 3382399323689189412
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        FlatValue: 0
+        Flat: 0
         ValueType: 0
         Operator: 0
     - rid: 3382399323689189413
-      type: {class: BaseEffectValue, ns: , asm: Assembly-CSharp}
+      type: {class: FlatValue, ns: , asm: Assembly-CSharp}
       data:
-        FlatValue: 0
+        Flat: 0
         ValueType: 0
         Operator: 0
     - rid: 3382399323689189414

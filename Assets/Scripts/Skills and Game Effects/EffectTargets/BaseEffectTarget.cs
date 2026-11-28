@@ -98,7 +98,7 @@ public class AllAllies : BaseEffectTarget
     {
         if (caster.IsPlayer())
         {
-            return battleSystem.PlayerList.ToArray();
+            return battleSystem.LivingPlayers.ToArray();
         }
         else return enemyController.LivingEnemies.ToArray();
     }
@@ -123,7 +123,7 @@ public class AllAlliesExceptCaster : BaseEffectTarget
     {
         if (caster.IsPlayer())
         {
-            var l = battleSystem.PlayerList;
+            var l = battleSystem.LivingPlayers;
             l.Remove(caster as PlayerCharacter);
             return l.ToArray();
         }
@@ -155,7 +155,7 @@ public class AllAlliesExceptTarget : BaseEffectTarget
     {
         if (caster.IsPlayer())
         {
-            var l = battleSystem.PlayerList;
+            var l = battleSystem.LivingPlayers;
             l.Remove(target as PlayerCharacter);
             return l.ToArray();
         }
@@ -185,7 +185,7 @@ public class AllEnemies : BaseEffectTarget
 
     public override BaseCharacter[] GetTargets(BaseCharacter caster, BaseCharacter target)
     {
-        if (!caster.IsPlayer()) return battleSystem.PlayerList.ToArray();
+        if (!caster.IsPlayer()) return battleSystem.LivingPlayers.ToArray();
         else return enemyController.LivingEnemies.ToArray();
     }
 }

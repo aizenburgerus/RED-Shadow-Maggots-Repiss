@@ -57,6 +57,12 @@ public class AnimationHelper : MonoBehaviour
 
     int attackIndex, effectIndex = 1;
 
+    public void ResetAttackCounters()
+    {
+        attackIndex = 0;
+        effectIndex = 1;
+    }
+
     const int DEFAULT_LAYER_ID = 17; // TF2 Ragdoll
     const int IGNORE_LAYER_ID = 19; // Ignore Cutscene Cam
 
@@ -235,36 +241,40 @@ public class AnimationHelper : MonoBehaviour
         var a = BaseCharacter.IncomingAttack.Ability;
         var targets = BaseCharacter.IncomingAttack.Targets;
 
+        if (targets.Caster != baseCharacter || a == null || a.effects == null || a.effects.Length == 0) return;
+        if (a.effects[0].attackProps == null) return;
+        var hits = a.effects[0].attackProps.Hits;
+        if (hits == null || attackIndex >= hits.Length) return;
+
         // This is really bad practice, but it's the Animations that dictate when an attack happens
-        BaseCharacter.IncomingDamage.Percentage = a.effects[0].attackProps.Hits[attackIndex];
+        BaseCharacter.IncomingDamage.Percentage = hits[attackIndex++];
 
         BaseCharacter.OnCharacterExecuteAttack?.Invoke(BaseCharacter);
 
         foreach (var character in targets.Targets)
         {
-            baseCharacter.DealDamage(character);
+            if (character && !character.IsDead) baseCharacter.DealDamage(character);
         }
 
-        attackIndex++;
     }
 
     public void ApplyNextAttackEffect()
     {
         var a = BaseCharacter.IncomingAttack.Ability;
-
-        a.effects[effectIndex].appStyle.Apply(a.effects[effectIndex], baseCharacter, battleSystem.OpposingCharacter);
+        if (BaseCharacter.IncomingAttack.Targets.Caster != baseCharacter || a == null ||
+            a.effects == null || effectIndex >= a.effects.Length) return;
+        var group = a.effects[effectIndex++];
+        StartCoroutine(group.appStyle.Apply(group, baseCharacter, battleSystem.OpposingCharacter));
     }
 
     public void FinishAttack()
     {
-        attackIndex = 0;
-        effectIndex = 1;
         baseCharacter.FinishAttack();
     }
 
     public void FinishSuperCritAttack() => baseCharacter.FinishSuperCritAttack();
 
-    public void TeleportBack() => sceneTweener.TeleportBackToPosition();
+    public void TeleportBack() => sceneTweener.TeleportBackToPosition(baseCharacter.transform);
 
     public void FinishSkill()
     {

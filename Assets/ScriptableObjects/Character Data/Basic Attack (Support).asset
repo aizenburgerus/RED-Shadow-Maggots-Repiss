@@ -55,7 +55,8 @@ MonoBehaviour:
         Value:
           rid: 3629733565930668253
         ValueType: 0
-        Stat: {fileID: 11400000, guid: fe45de3acb5849f499215f92adf9f519, type: 2}
+        Stat:
+          rid: 3629733565930668254
         StatSource:
           rid: 3629733507922395155
     - rid: 3629733507922395155
@@ -68,3 +69,7 @@ MonoBehaviour:
           rid: -2
         ValueType: 0
         Flat: 0.8
+    - rid: 3629733565930668254
+      type: {class: AttackStat, ns: , asm: Assembly-CSharp}
+      data:
+        ValueType: 0
